@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE meta []>
+<meta 
+	license="http://www.opensource.org/licenses/bsd-license.php BSD"
+	author="Evgeniy Sokolov &lt;ewgraf@gmail.com&gt;"
+	DAExtends="CmsDatabaseRequester"
+>
+	<Language generate="false" />
+
+	<ContentStatus type="Enumeration" />
+	
+	<Content>
+		<properties>
+			<id />
+			<status class="ContentStatus" />
+		</properties>
+	</Content>
+	
+	<ContentData>
+		<properties>
+			<id />
+			<content class="Content" />
+			<language class="Language" />
+			<text />
+		</properties>
+	</ContentData>
+</meta>
