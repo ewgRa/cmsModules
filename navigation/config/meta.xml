@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE meta []>
+<meta 
+	license="http://www.opensource.org/licenses/bsd-license.php BSD"
+	author="Evgeniy Sokolov &lt;ewgraf@gmail.com&gt;"
+	DAExtends="CmsDatabaseRequester"
+>
+	<Language generate="false" />
+
+	<HttpUrl type="Stringable" />
+
+	<NavigationCategory>
+		<properties>
+			<id />
+			<alias />
+		</properties>
+	</NavigationCategory>
+
+	<Navigation>
+		<properties>
+			<id />
+			<category class="NavigationCategory" />
+			<uri class="HttpUrl" />
+		</properties>
+	</Navigation>
+	
+	<NavigationData>
+		<properties>
+			<id />
+			<navigation class="Navigation" />
+			<language class="Language" />
+			<text />
+		</properties>
+	</NavigationData>
+
+</meta>
