@@ -40,5 +40,32 @@
 			
 			return parent::handleRequest($request, $mav);
 		}
+
+		public static function catchPageAccessDeniedException(
+			HttpRequest $request,
+			PageAccessDeniedException $e
+		) {
+			$rights =
+				PageRight::da()->getByPage(
+					$request->getAttachedVar(AttachedAliases::PAGE)
+				);
+			
+			$right = array_shift($rights);
+			
+			$url = 
+				HttpUrl::createFromString(
+					$right->getRedirectPage()->getPath().'?backurl='
+					.base64_encode($request->getUrl())
+				);
+			
+			$request->setUrl($url);
+
+			$modelAndView = ModelAndView::create();
+			
+			$chainController = createCommonChain();
+			$chainController->handleRequest($request, ModelAndView::create());
+			
+			return $modelAndView->render();
+		}
 	}
 ?>
