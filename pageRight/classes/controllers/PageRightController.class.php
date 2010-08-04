@@ -63,7 +63,13 @@
 			$modelAndView = ModelAndView::create();
 			
 			$chainController = createCommonChain();
-			$chainController->handleRequest($request, ModelAndView::create());
+			$chainController->handleRequest($request, $modelAndView);
+			
+			$request->getAttachedVar(AttachedAliases::PAGE_HEADER)->
+				add(
+					$request->getServerVar('SERVER_PROTOCOL')
+					.' 403 Forbidden'
+				);
 			
 			return $modelAndView->render();
 		}
