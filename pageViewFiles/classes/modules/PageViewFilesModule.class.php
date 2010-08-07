@@ -48,13 +48,9 @@
 			
 			$cacheTicket = ViewFile::da()->createCacheTicket();
 			
-			if ($cacheTicket) {
-				$this->setCacheTicket(
-					$cacheTicket->
-						setPrefix(__CLASS__.'/'.__FUNCTION__)->
-						setKey($this->getPage())
-				);
-			}
+			$this->setCacheTicket(
+				$cacheTicket->setKey(__CLASS__, __FUNCTION__, $this->getPage())
+			);
 			
 			return $this;
 		}
@@ -96,13 +92,9 @@
 
 		public static function createJoinedListsCacheTicket()
 		{
-			$cacheTicket = ViewFile::da()->createCacheTicket();
-			
-			Assert::isNotNull($cacheTicket);
-			
-			return
-				$cacheTicket->
-				setPrefix(__CLASS__.'/'.__FUNCTION__);
+			return 
+				ViewFile::da()->createCacheTicket()->
+				setKey(__CLASS__, __FUNCTION__);
 		}
 		
 		/**
@@ -111,7 +103,7 @@
 		protected function storeCacheTicketData($data)
 		{
 			if ($cacheTicket = $this->getCacheTicket())
-				ViewFile::da()->addTicketToTag($cacheTicket);
+				ViewFile::da()->addCacheTicketToTag($cacheTicket);
 			
 			return parent::storeCacheTicketData($data);
 		}
@@ -125,9 +117,14 @@
 
 			foreach ($files as $file) {
 				if($file instanceof JoinedViewFile) {
-					$this->createJoinedListsCacheTicket()->
-						setKey($file->getPath())->
+					$cacheTicket= 
+						$this->createJoinedListsCacheTicket();
+					
+					$cacheTicket->
+						addKey($file->getPath())->
 						storeData($file);
+					
+					ViewFile::da()->addCacheTicketToTag($cacheTicket);
 					
 					if ($this->additionalJoinUrl)
 						$file->setPath($this->additionalJoinUrl.'/'.$file->getPath());
