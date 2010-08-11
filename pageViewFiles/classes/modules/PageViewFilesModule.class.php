@@ -90,13 +90,6 @@
 			return $model;
 		}
 
-		public static function createJoinedListsCacheTicket()
-		{
-			return 
-				ViewFile::da()->createCacheTicket()->
-				setKey(__CLASS__, __FUNCTION__);
-		}
-		
 		/**
 		 * @return PageViewFilesModule
 		 */
@@ -117,17 +110,10 @@
 
 			foreach ($files as $file) {
 				if($file instanceof JoinedViewFile) {
-					$cacheTicket= 
-						$this->createJoinedListsCacheTicket();
-					
-					$cacheTicket->
-						addKey($file->getPath())->
-						storeData($file);
-					
-					ViewFile::da()->addCacheTicketToTag($cacheTicket);
-					
 					if ($this->additionalJoinUrl)
 						$file->setPath($this->additionalJoinUrl.'/'.$file->getPath());
+						
+					$file->da()->insert($file);
 				}
 			}
 

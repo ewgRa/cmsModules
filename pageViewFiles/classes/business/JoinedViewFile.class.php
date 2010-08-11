@@ -23,6 +23,14 @@
 		}
 		
 		/**
+		 * @return JoinedViewFileDA 
+		 */
+		public static function da()
+		{
+			return JoinedViewFileDA::me();
+		}
+		
+		/**
 		 * @return JoinedViewFile
 		 */
 		public function setFiles(array $files)
