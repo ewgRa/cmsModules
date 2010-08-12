@@ -7,6 +7,9 @@
 	{
 		private $contentTypes = null;
 		
+		private $defaultHost = null;
+		private $defaultScheme = 'http';
+		
 		/**
 		 * @return MediaFilesJoiner
 		 */
@@ -27,6 +30,28 @@
 		public function getContentTypes()
 		{
 			return $this->contentTypes;
+		}
+		
+		public function setDefaultScheme($scheme = 'http')
+		{
+			$this->defaultScheme = $scheme;
+			return $this;
+		}
+		
+		public function getDefaultScheme()
+		{
+			return $this->defaultScheme;	
+		}
+		
+		public function setDefaultHost($host)
+		{
+			$this->defaultHost = $host;
+			return $this;
+		}
+		
+		public function getDefaultHost()
+		{
+			return $this->defaultHost;	
 		}
 		
 		public function joinFiles(array $files)
@@ -56,7 +81,19 @@
 			
 			foreach ($bufferJoinFiles as $contentTypeId => $files) {
 				$contentType = ContentType::create($contentTypeId);
-				
+
+				foreach ($files as $file) {
+					$url = HttpUrl::createFromString($file->getPath());
+					
+					if (!$url->getHost()) {
+						$url->
+							setHost($this->getDefaultHost())->
+							setScheme($this->getDefaultScheme());
+						
+						$file->setPath((string)$url);
+					}
+				}
+
 				$joinFiles[] =
 					JoinedViewFile::create()->
 					setFiles($files)->

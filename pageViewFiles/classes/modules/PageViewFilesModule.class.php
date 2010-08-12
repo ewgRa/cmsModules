@@ -105,6 +105,7 @@
 		{
 			$files =
 				MediaFilesJoiner::create()->
+				setDefaultHost($this->getRequest()->getServerVar('SERVER_NAME'))->
 				setContentTypes($this->getJoinContentTypes())->
 				joinFiles($viewFiles);
 

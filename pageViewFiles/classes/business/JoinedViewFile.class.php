@@ -81,20 +81,31 @@
 			return $this->path;
 		}
 		
-		public function getJoinedContent($defaultHost, $defaultScheme = 'http')
+		public function buildToFile(File $file)
+		{
+			$fileData = $this->getJoinedContent();
+			
+			$dir = $file->getDir();
+			
+			if (!$dir->isExists())
+				$dir->make();
+				
+			$file->setContent($fileData);
+			$file->chmod(File::PERMISSIONS);
+			
+			$this->da()->dropByPath($this->getPath());
+			
+			return $fileData;
+		}
+
+		private function getJoinedContent()
 		{
 			$result = '';
 	
 			foreach ($this->getFiles() as $file) {
 				$url = HttpUrl::createFromString($file->getPath());
 				
-				if (!$url->getHost()) {
-					$url->
-						setHost($defaultHost)->
-						setScheme($defaultScheme);
-				}
-				
-				$result .= file_get_contents($url).PHP_EOL.PHP_EOL;
+				$result .= $url->downloadContent().PHP_EOL.PHP_EOL;
 			}
 			
 			return $result;
