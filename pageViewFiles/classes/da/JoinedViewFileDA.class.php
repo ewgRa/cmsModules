@@ -45,6 +45,9 @@
 			return $this;
 		}
 		
+		/**
+		 * @return CacheTicket
+		 */
 		private function createCacheTicket()
 		{
 			return 
