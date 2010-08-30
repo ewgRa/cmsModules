@@ -46,13 +46,17 @@
 				}
 			}
 			
-			$cacheTicket = ViewFile::da()->createCacheTicket();
-			
+			return $this;
+		}
+		
+		public function getRenderedModel()
+		{
 			$this->setCacheTicket(
-				$cacheTicket->setKey(__CLASS__, __FUNCTION__, $this->getPage())
+				ViewFile::da()->createCacheTicket()->
+				setKey(__CLASS__, __FUNCTION__, $this->getPage())
 			);
 			
-			return $this;
+			return parent::getRenderedModel();
 		}
 		
 		/**
