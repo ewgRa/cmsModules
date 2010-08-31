@@ -1,5 +1,5 @@
 <?php
-	if ($loginResult != LoginModule::SUCCESS_LOGIN) {
+	if (!isset($loginResult) || $loginResult != LoginModule::SUCCESS_LOGIN) {
 ?>
 	<form method="post">
 		<input type="hidden" name="backurl" value="<?=$backurlForm->getValue('backUrl')?>" /><br />

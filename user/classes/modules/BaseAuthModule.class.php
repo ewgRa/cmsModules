@@ -14,7 +14,7 @@
 			$this->
 				addAction('login', 'login')->
 				addAction('logout', 'logout')->
-				setDefaultAction('login');
+				setDefaultAction('showLoginForm');
 		}
 		
 		protected function logout()
@@ -28,9 +28,56 @@
 		
 		protected function login()
 		{
+			$model = $this->showLoginForm();
+			
 			$user = null;
 			$loginResult = null;
 
+			$form = $this->createLoginForm();
+			$this->importLoginForm($form);
+			
+			if (!$form->getErrors()) {
+				
+				Session::me()->start();
+				Session::me()->drop('userId');
+				Session::me()->save();
+	
+				$loginResult = self::SUCCESS_LOGIN;
+				
+				$user = User::da()->getByLogin($form->getValue('login'));
+				
+				if (!$user)
+					$loginResult = self::WRONG_LOGIN;
+				
+				if (
+					$user 
+					&& $user->getPassword() != md5($form->getValue('password'))
+				)
+					$loginResult = self::WRONG_PASSWORD;
+				
+				if ($loginResult == self::SUCCESS_LOGIN) {
+					$this->getRequest()->setAttachedVar(AttachedAliases::USER, $user);
+	
+					Session::me()->set('userId', $user->getId());
+					Session::me()->save();
+					
+					if ($backurl = $model->get('backurlForm')->getValue('backurl')) {
+						$this->getPageHeader()->addRedirect(
+							HttpUrl::createFromString(base64_decode($backurl))
+						);
+					}
+				}
+			}
+
+			return 
+				$model->
+				set('form', $form)->
+				set('user', $user)->
+				set('loginResult', $loginResult);
+		}
+		
+		protected function showLoginForm()
+		{
 			$backurlForm = 
 				$this->createBackUrlForm()->
 				import(
@@ -40,52 +87,10 @@
 				
 			if ($backurlForm->getErrors())
 				throw new BadRequestException();
-				
-			$form = $this->createLoginForm();
-			$this->importLoginForm($form);
-			
-			if ($form->isImported()) {
-				
-				if (!$form->getErrors()) {
-					
-					Session::me()->start();
-					Session::me()->drop('userId');
-					Session::me()->save();
-		
-					$loginResult = self::SUCCESS_LOGIN;
-					
-					$user = User::da()->getByLogin($form->getValue('login'));
-					
-					if (!$user)
-						$loginResult = self::WRONG_LOGIN;
-					
-					if (
-						$user 
-						&& $user->getPassword() != md5($form->getValue('password'))
-					)
-						$loginResult = self::WRONG_PASSWORD;
-					
-					if ($loginResult == self::SUCCESS_LOGIN) {
-						$this->getRequest()->setAttachedVar(AttachedAliases::USER, $user);
-		
-						Session::me()->set('userId', $user->getId());
-						Session::me()->save();
-						
-						if ($backurl = $backurlForm->getValue('backurl')) {
-							$this->getPageHeader()->addRedirect(
-								HttpUrl::createFromString(base64_decode($backurl))
-							);
-						}
-					}
-				}
-			}
 
 			return 
 				Model::create()->
-				set('form', $form)->
-				set('backurlForm', $backurlForm)->
-				set('user', $user)->
-				set('loginResult', $loginResult);
+				set('backurlForm', $backurlForm);
 		}
 		
 		/**
