@@ -19,31 +19,32 @@
 					? $request->getAttachedVar(AttachedAliases::USER)
 					: null;
 			
-			$requiredRights =
-				array_keys(Right::da()->getByAliases($this->requiredRights));
+			$requiredRights = Right::da()->getByAliases($this->requiredRights);
 			
 			if (
-				$user && $user->getId()
-				&& array_intersect(
-					UserRight::da()->getRightIdsByUser($user),
-					$requiredRights
-				)
-					== $requiredRights
+				$user 
+				&& $user->getId()
+				&& $user->checkAccess($requiredRights)
 			)
 				return parent::handleRequest($request, $mav);
 			
-			return $this->unAuthorized('Enter you auth data', 'Need auth', $request);
-		}
-		
-		/**
-		 * FIXME: stay in framework area
-		 */
-		private function unAuthorized($realm, $cancelMessage, HttpRequest $request)
-		{
-			header('WWW-Authenticate: Basic realm="' . $realm . '"');
-			header($request->getServerVar('SERVER_PROTOCOL').' 401 Unauthorized');
-			echo $cancelMessage;
-			die();
+			$pageHeader = $request->getAttachedVar(AttachedAliases::PAGE_HEADER);
+			
+			$pageHeader->
+				add('WWW-Authenticate', 'Basic realm="Enter you auth data"')->
+				add($request->getServerVar('SERVER_PROTOCOL').' 401 Unauthorized');
+			
+			$mav->setView(
+				PhpView::create()->
+				loadLayout(
+					File::create()->
+					setPath(
+						dirname(__FILE__).'/../../view/php/401unauthorized.php'
+					)
+				)
+			);
+			
+			return $mav;
 		}
 	}
 ?>
