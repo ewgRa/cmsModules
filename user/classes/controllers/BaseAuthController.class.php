@@ -3,7 +3,7 @@
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
 	*/
-	abstract class BaseAuthController extends ActionChainController
+	abstract class BaseAuthController extends CmsActionChainController
 	{
 		const SUCCESS_LOGIN		= 1;
 		const WRONG_LOGIN		= 2;
