@@ -2,11 +2,27 @@
 	/**
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
-	 * FIXME: extends from UserRightController
 	*/
-	final class UserRight401Controller extends ChainController
+	final class UserRight401Controller extends UserRightController
 	{
-		private $requiredRights = array();
+		private $requiredRightAliases = array();
+		
+		/**
+		 * @return UserRight401Controller
+		 */
+		public static function create(ChainController $controller = null)
+		{
+			return new self($controller);	
+		}
+		
+		/**
+		 * @return UserRight401Controller
+		 */
+		public function setRequiredRightAliases(array $aliases)
+		{
+			$this->requiredRightAliases = $aliases;
+			return $this;
+		}
 		
 		/**
 		 * @return ModelAndView
@@ -15,37 +31,31 @@
 			HttpRequest $request,
 			ModelAndView $mav
 		) {
-			$user =
-				$request->hasAttachedVar(AttachedAliases::USER)
-					? $request->getAttachedVar(AttachedAliases::USER)
-					: null;
-			
-			$requiredRights = Right::da()->getByAliases($this->requiredRights);
-			
-			if (
-				$user 
-				&& $user->getId()
-				&& $user->checkAccess($requiredRights)
-			)
-				return parent::handleRequest($request, $mav);
-			
-			$pageHeader = $request->getAttachedVar(AttachedAliases::PAGE_HEADER);
-			
-			$pageHeader->
-				add('WWW-Authenticate', 'Basic realm="Enter you auth data"')->
-				add($request->getServerVar('SERVER_PROTOCOL').' 401 Unauthorized');
-			
-			$mav->setView(
-				PhpView::create()->
-				loadLayout(
-					File::create()->
-					setPath(
-						dirname(__FILE__).'/../../view/php/401unauthorized.php'
-					)
-				)
+			$this->setRequiredRights(
+				Right::da()->getByAliases($this->requiredRightAliases)
 			);
-			
-			return $mav;
+
+			try {
+				return parent::handleRequest($request, $mav);
+			} catch(PageAccessDeniedException $e) {
+				$pageHeader = $request->getAttachedVar(AttachedAliases::PAGE_HEADER);
+				
+				$pageHeader->
+					add('WWW-Authenticate', 'Basic realm="Enter you auth data"')->
+					add($request->getServerVar('SERVER_PROTOCOL').' 401 Unauthorized');
+				
+				return
+					ModelAndView::create()->
+					setView(
+						PhpView::create()->
+						loadLayout(
+							File::create()->
+							setPath(
+								dirname(__FILE__).'/../../view/php/401unauthorized.php'
+							)
+						)
+					);
+			}
 		}
 	}
 ?>

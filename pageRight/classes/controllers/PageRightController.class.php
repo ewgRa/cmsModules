@@ -2,9 +2,8 @@
 	/**
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
-	 * FIXME: extends from UserRightController
 	*/
-	final class PageRightController extends ChainController
+	final class PageRightController extends UserRightController
 	{
 		/**
 		 * @return ModelAndView
@@ -26,22 +25,11 @@
 			foreach ($pageRights as $pageRight)
 				$rightIds[] = $pageRight->getRightId();
 			
-			$rights = Right::da()->getByIds($rightIds);
-
-			$result = true;
-			
-			if ($rights && !$user)
-				$result = false;
-				
-			if ($result && $rights && $user)
-				$result = $user->checkAccess($rights);
-			
-			if (!$result)
-				throw PageAccessDeniedException::create();
-			
+			$this->setRequiredRights(Right::da()->getByIds($rightIds));
 			return parent::handleRequest($request, $mav);
 		}
 
+		// FIXME: external redirect?
 		public static function catchPageAccessDeniedException(
 			HttpRequest $request,
 			PageAccessDeniedException $e
