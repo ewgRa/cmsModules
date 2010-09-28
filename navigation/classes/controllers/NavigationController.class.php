@@ -92,7 +92,8 @@
 					$result['navigationList'],
 					array(
 						$request->getAttachedVar(AttachedAliases::LOCALIZER)->
-							getRequestLanguage())
+						getRequestLanguage()
+					)
 				);
 				
 			foreach ($navigationDataList as $navigationData) {
