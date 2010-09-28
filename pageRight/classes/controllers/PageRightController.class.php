@@ -58,7 +58,7 @@
 
 			$modelAndView = ModelAndView::create();
 			
-			$chainController = createCommonChain();
+			$chainController = $this->getFirstController();
 
 			$mav = $chainController->handleRequest($request, $modelAndView);
 
