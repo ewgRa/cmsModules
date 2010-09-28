@@ -3,13 +3,13 @@
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
 	*/
-	final class NavigationModule extends CmsModule
+	final class NavigationController extends ChainController
 	{
 		private $categoryIds = null;
 		private $rightIds = null;
 		
 		/**
-		 * @return NavigationModule
+		 * @return NavigationController
 		 */
 		public function setCategoryIds(array $categoryIds)
 		{
@@ -23,7 +23,7 @@
 		}
 		
 		/**
-		 * @return NavigationModule
+		 * @return NavigationController
 		 */
 		public function setRightIds(array $rightIds)
 		{
@@ -37,7 +37,7 @@
 		}
 		
 		/**
-		 * @return NavigationModule
+		 * @return NavigationController
 		 */
 		public function importSettings(array $settings = null)
 		{
@@ -50,16 +50,16 @@
 		}
 		
 		/**
-		 * @return Model
+		 * @return ModelAndView
 		 */
-		public function getModel()
-		{
-			$result = Model::create();
-			
+		public function handleRequest(
+			HttpRequest $request,
+			ModelAndView $mav
+		) {
 			if ($this->checkAccess())
-				$result->setData($this->getData());
+				$mav->getModel()->merge($this->getData($request));
 				
-			return $result;
+			return parent::handleRequest($request, $mav);
 		}
 		
 		private function checkAccess()
@@ -76,7 +76,7 @@
 				);
 		}
 		
-		private function getData()
+		private function getData(HttpRequest $request)
 		{
 			$result = array();
 			
@@ -90,7 +90,9 @@
 			$navigationDataList =
 				NavigationData::da()->getList(
 					$result['navigationList'],
-					array($this->getLocalizer()->getRequestLanguage())
+					array(
+						$request->getAttachedVar(AttachedAliases::LOCALIZER)->
+							getRequestLanguage())
 				);
 				
 			foreach ($navigationDataList as $navigationData) {
@@ -98,7 +100,8 @@
 					$navigationData;
 			}
 			
-			$result['baseUrl'] = $this->getBaseUrl();
+			$result['baseUrl'] = 
+				$request->getAttachedVar(AttachedAliases::BASE_URL);
 			
 			return $result;
 		}

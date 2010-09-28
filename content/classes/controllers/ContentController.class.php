@@ -3,12 +3,12 @@
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
 	*/
-	final class ContentModule extends CmsModule
+	final class ContentController extends ChainController
 	{
 		private $units = null;
 		
 		/**
-		 * @return ContentModule
+		 * @return ContentController
 		 */
 		public function setUnits($units)
 		{
@@ -30,10 +30,12 @@
 		}
 		
 		/**
-		 * @return Model
+		 * @return ModelAndView
 		 */
-		public function getModel()
-		{
+		public function handleRequest(
+			HttpRequest $request,
+			ModelAndView $mav
+		) {
 			$result['contentList'] = Content::da()->getByIds($this->getUnits());
 			
 			$result['contentDataList'] = array();
@@ -41,7 +43,10 @@
 			$contentDataList =
 				ContentData::da()->getList(
 					$result['contentList'],
-					array($this->getLocalizer()->getRequestLanguage())
+					array(
+						$request->getAttachedVar(AttachedAliases::LOCALIZER)->
+						getRequestLanguage()
+					)
 				);
 			
 			foreach ($contentDataList as $contentData) {
@@ -49,19 +54,24 @@
 					$contentData;
 			}
 			
-			$result['replaceFilter'] = $this->getReplaceFilter();
+			$result['replaceFilter'] = $this->getReplaceFilter($request);
 		
-			return Model::create()->setData($result);
+			$mav->getModel()->merge($result);
+			
+			return parent::handleRequest($request, $mav);
 		}
 
 		/**
 		 * @return StringReplaceFilter
 		 */
-		private function getReplaceFilter()
+		private function getReplaceFilter(HttpRequest $request)
 		{
 			return
 				StringReplaceFilter::create()->
-				addReplacement('%baseUrl%', $this->getBaseUrl()->getPath());
+				addReplacement(
+					'%baseUrl%', 
+					$request->getAttachedVar(AttachedAliases::BASE_URL)->getPath()
+				);
 		}
 	}
 ?>

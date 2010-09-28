@@ -2,10 +2,11 @@
 	/**
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
+	 * FIXME: extends from UserRightController
 	*/
-	final class Auth401Controller extends ChainController
+	final class UserRight401Controller extends ChainController
 	{
-		private $requiredRights = array('root');
+		private $requiredRights = array();
 		
 		/**
 		 * @return ModelAndView

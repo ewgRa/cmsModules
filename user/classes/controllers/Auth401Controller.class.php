@@ -3,12 +3,17 @@
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
 	*/
-	final class Auth401Module extends BaseAuthModule
+	final class Auth401Controller extends BaseAuthController
 	{
-		protected function importLoginForm(Form $form)
+		public static function create(ChainController $controller = null)
 		{
-			if ($this->getRequest()->hasServerVar('PHP_AUTH_USER'))
-				$form->import($this->getRequest()->getServer());
+			return new self($controller);	
+		}
+		
+		protected function importLoginForm(HttpRequest $request, Form $form)
+		{
+			if ($request->hasServerVar('PHP_AUTH_USER'))
+				$form->import($request->getServer());
 			
 			return $this;
 		}	

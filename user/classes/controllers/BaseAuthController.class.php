@@ -3,38 +3,43 @@
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
 	*/
-	abstract class BaseAuthModule extends CmsActionModule
+	abstract class BaseAuthController extends ActionChainController
 	{
 		const SUCCESS_LOGIN		= 1;
 		const WRONG_LOGIN		= 2;
 		const WRONG_PASSWORD	= 3;
 
-		public function __construct()
+		/**
+		 * @return BaseAuthController
+		 */
+		public function __construct(ChainController $controller = null)
 		{
 			$this->
 				addAction('login', 'login')->
 				addAction('logout', 'logout')->
 				setDefaultAction('showLoginForm');
+			
+			parent::__construct($controller);
 		}
 		
-		protected function logout()
+		protected function logout(HttpRequest $request, ModelAndView $mav)
 		{
 			Session::me()->start();
 			Session::me()->drop('userId');
 			Session::me()->save();
 			
-			return Model::create();
+			return $this->continueHandleRequest($request, $mav);
 		}
 		
-		protected function login()
+		protected function login(HttpRequest $request, ModelAndView $mav)
 		{
-			$model = $this->showLoginForm();
-			
+			$this->attachBackurlForm($request, $mav);
+						
 			$user = null;
 			$loginResult = null;
 
 			$form = $this->createLoginForm();
-			$this->importLoginForm($form);
+			$this->importLoginForm($request, $form);
 			
 			if (!$form->getErrors()) {
 				
@@ -50,47 +55,42 @@
 					$loginResult = self::WRONG_LOGIN;
 				
 				if (
-					$user 
+					$user
 					&& $user->getPassword() != md5($form->getValue('password'))
 				)
 					$loginResult = self::WRONG_PASSWORD;
 				
 				if ($loginResult == self::SUCCESS_LOGIN) {
-					$this->getRequest()->setAttachedVar(AttachedAliases::USER, $user);
+					$request->setAttachedVar(AttachedAliases::USER, $user);
 	
 					Session::me()->set('userId', $user->getId());
 					Session::me()->save();
 					
-					if ($backurl = $model->get('backurlForm')->getValue('backurl')) {
-						$this->getPageHeader()->addRedirect(
-							HttpUrl::createFromString(base64_decode($backurl))
-						);
+					if (
+						$backurl = 
+							$mav->getModel()->get('backurlForm')->getValue('backurl')
+					) {
+						$request->getAttachedVar(AttachedAliases::PAGE_HEADER)->
+							addRedirect(
+								HttpUrl::createFromString(base64_decode($backurl))
+							);
 					}
 				}
 			}
 
-			return 
-				$model->
+			$mav->getModel()->
 				set('form', $form)->
 				set('user', $user)->
 				set('loginResult', $loginResult);
+			
+			return $this->continueHandleRequest($request, $mav);
 		}
 		
-		protected function showLoginForm()
+		protected function showLoginForm(HttpRequest $request, ModelAndView $mav)
 		{
-			$backurlForm = 
-				$this->createBackUrlForm()->
-				import(
-					$this->getRequest()->getPost()
-					+ $this->getRequest()->getGet()
-				);
-				
-			if ($backurlForm->getErrors())
-				throw new BadRequestException();
-
-			return 
-				Model::create()->
-				set('backurlForm', $backurlForm);
+			$this->attachBackurlForm($request, $mav);
+			
+			return parent::handleRequest($request, $mav);
 		}
 		
 		/**
@@ -108,9 +108,9 @@
 				);
 		}
 
-		protected function importLoginForm(Form $form)
+		protected function importLoginForm(HttpRequest $request, Form $form)
 		{
-			$form->import($this->getRequest()->getPost());
+			$form->import($request->getPost());
 			return $this;
 		}	
 
@@ -122,6 +122,20 @@
 			return
 				Form::create()->
 				addPrimitive(PrimitiveString::create('backurl'));
+		}
+
+		private function attachBackurlForm(HttpRequest $request, ModelAndView $mav)
+		{
+			$backurlForm = 
+				$this->createBackUrlForm()->
+				import($request->getPost() + $request->getGet());
+				
+			if ($backurlForm->getErrors())
+				throw new BadRequestException();
+
+			$mav->getModel()->set('backurlForm', $backurlForm);
+			
+			return $mav;
 		}
 	}
 ?>

@@ -2,15 +2,16 @@
 	/**
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
+	 * FIXME: cache
 	*/
-	final class PageViewFilesModule extends CmsModule
+	final class PageViewFilesController extends ChainController
 	{
 		private $joinContentTypes = array();
 		
 		private $additionalJoinUrl = '/join';
 		
 		/**
-		 * @return PageViewFilesModule
+		 * @return PageViewFilesController
 		 */
 		public function addJoinContentType(ContentType $contentType)
 		{
@@ -24,7 +25,7 @@
 		}
 		
 		/**
-		 * @return PageViewFilesModule
+		 * @return PageViewFilesController
 		 */
 		public function importSettings(array $settings = null)
 		{
@@ -49,22 +50,17 @@
 			return $this;
 		}
 		
-		public function getRenderedModel()
-		{
-			$this->setCacheTicket(
-				ViewFile::da()->createCacheTicket()->
-				setKey(__CLASS__, __FUNCTION__, $this->getPage())
-			);
-			
-			return parent::getRenderedModel();
-		}
-		
 		/**
-		 * @return Model
+		 * @return ModelAndView
 		 */
-		public function getModel()
-		{
-			$viewFiles = ViewFile::da()->getByPage($this->getPage());
+		public function handleRequest(
+			HttpRequest $request,
+			ModelAndView $mav
+		) {
+			$viewFiles = 
+				ViewFile::da()->getByPage(
+					$request->getAttachedVar(AttachedAliases::PAGE)
+				);
 			
 			$inheritanceFiles =
 				array_diff_assoc(
@@ -87,29 +83,18 @@
 			}
 			
 			if ($this->getJoinContentTypes())
-				$viewFiles = $this->joinFiles($viewFiles);
+				$viewFiles = $this->joinFiles($request, $viewFiles);
 			
-			$model = Model::create()->set('files', $viewFiles);
+			$mav->getModel()->set('files', $viewFiles);
 			
-			return $model;
+			return parent::handleRequest($request, $mav);
 		}
 
-		/**
-		 * @return PageViewFilesModule
-		 */
-		protected function storeCacheTicketData($data)
-		{
-			if ($cacheTicket = $this->getCacheTicket())
-				ViewFile::da()->addCacheTicketToTag($cacheTicket);
-			
-			return parent::storeCacheTicketData($data);
-		}
-		
-		private function joinFiles(array $viewFiles)
+		private function joinFiles(HttpRequest $request, array $viewFiles)
 		{
 			$files =
 				MediaFilesJoiner::create()->
-				setDefaultHost($this->getRequest()->getServerVar('SERVER_NAME'))->
+				setDefaultHost($request->getServerVar('SERVER_NAME'))->
 				setContentTypes($this->getJoinContentTypes())->
 				joinFiles($viewFiles);
 
