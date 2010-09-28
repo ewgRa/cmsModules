@@ -26,24 +26,31 @@
 				$rightIds[] = $pageRight->getRightId();
 			
 			$this->setRequiredRights(Right::da()->getByIds($rightIds));
-			return parent::handleRequest($request, $mav);
+			
+			$redirectPage = null;
+			
+			if ($pageRights) {
+				$firstRight = array_shift($pageRights);
+				$redirectPage = $firstRight->getRedirectPage();
+			}
+
+			try {
+				return parent::handleRequest($request, $mav);
+			} catch(PageAccessDeniedException $e) {
+				if (!$redirectPage)
+					throw $e;
+				
+				return $this->catchPageAccessDeniedException($request, $redirectPage);
+			}
 		}
 
-		// FIXME: external redirect?
-		public static function catchPageAccessDeniedException(
-			HttpRequest $request,
-			PageAccessDeniedException $e
+		private function catchPageAccessDeniedException(
+			HttpRequest $request, 
+			Page $redirectPage
 		) {
-			$rights =
-				PageRight::da()->getByPage(
-					$request->getAttachedVar(AttachedAliases::PAGE)
-				);
-			
-			$right = array_shift($rights);
-			
 			$url = 
 				HttpUrl::createFromString(
-					$right->getRedirectPage()->getPath().'?backurl='
+					$redirectPage->getPath().'?backurl='
 					.base64_encode($request->getUrl())
 				);
 			
@@ -52,15 +59,16 @@
 			$modelAndView = ModelAndView::create();
 			
 			$chainController = createCommonChain();
-			$chainController->handleRequest($request, $modelAndView);
-			
+
+			$mav = $chainController->handleRequest($request, $modelAndView);
+
 			$request->getAttachedVar(AttachedAliases::PAGE_HEADER)->
 				add(
 					$request->getServerVar('SERVER_PROTOCOL')
 					.' 403 Forbidden'
 				);
-			
-			return $modelAndView->render();
+
+			return $mav;
 		}
 	}
 ?>
