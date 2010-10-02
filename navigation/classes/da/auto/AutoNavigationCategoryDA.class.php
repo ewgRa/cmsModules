@@ -5,7 +5,7 @@
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
 	 */
-	abstract class AutoNavigationCategoryDA extends CmsDatabaseRequester
+	abstract class AutoNavigationCategoryDA extends DatabaseRequester
 	{
 		protected $tableAlias = 'NavigationCategory';
 		
