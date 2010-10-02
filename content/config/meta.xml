@@ -3,9 +3,10 @@
 <meta 
 	license="http://www.opensource.org/licenses/bsd-license.php BSD"
 	author="Evgeniy Sokolov &lt;ewgraf@gmail.com&gt;"
-	DAExtends="DatabaseRequester"
+	DAExtends="\ewgraCms\DatabaseRequester"
+	namespace="ewgraCmsModule"
 >
-	<Language generate="false" />
+	<Language namespace="\ewgraCms" generate="false"/>
 
 	<ContentStatus type="Enumeration" />
 	
@@ -20,7 +21,7 @@
 		<properties>
 			<id />
 			<content class="Content" />
-			<language class="Language" />
+			<language class="\ewgraCms\Language" />
 			<text />
 		</properties>
 	</ContentData>

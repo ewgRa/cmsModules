@@ -1,4 +1,6 @@
 <?php
+	namespace ewgraCmsModules;
+	
 	foreach ($files as $file) {
 		switch ($file->getContentType()->getId()) {
 			case ContentType::TEXT_JAVASCRIPT:

@@ -1,4 +1,6 @@
 <?php
+	namespace ewgraCmsModules;
+	
 	if (isset($navigationDataList)) {
 ?>
 	<ul>

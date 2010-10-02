@@ -3,11 +3,12 @@
 <meta 
 	license="http://www.opensource.org/licenses/bsd-license.php BSD"
 	author="Evgeniy Sokolov &lt;ewgraf@gmail.com&gt;"
-	DAExtends="DatabaseRequester"
+	DAExtends="\ewgraCms\DatabaseRequester"
+	namespace="ewgraCmsModules"
 >
-	<Language generate="false" />
+	<Language namespace="\ewgraCms" generate="false" />
 
-	<HttpUrl type="Stringable" />
+	<HttpUrl namespace="\ewgraFramework" type="Stringable" />
 
 	<NavigationCategory>
 		<properties>
@@ -20,7 +21,7 @@
 		<properties>
 			<id />
 			<category class="NavigationCategory" />
-			<uri class="HttpUrl" />
+			<uri class="\ewgraFramework\HttpUrl" />
 		</properties>
 	</Navigation>
 	
@@ -28,9 +29,8 @@
 		<properties>
 			<id />
 			<navigation class="Navigation" />
-			<language class="Language" />
+			<language class="\ewgraCms\Language" />
 			<text />
 		</properties>
 	</NavigationData>
-
 </meta>

@@ -3,7 +3,8 @@
 <meta 
 	license="http://www.opensource.org/licenses/bsd-license.php BSD"
 	author="Evgeniy Sokolov &lt;ewgraf@gmail.com&gt;"
-	DAExtends="DatabaseRequester"
+	DAExtends="\ewgraCms\DatabaseRequester"
+	namespace="ewgraCmsModules"
 >
 	<User>
 		<properties>
