@@ -24,7 +24,7 @@
 			";
 			
 			return $this->getListCachedByQuery(
-				DatabaseQuery::create()->
+				\ewgraFramework\DatabaseQuery::create()->
 				setQuery($dbQuery)->
 				setValues(array($ids))
 			);

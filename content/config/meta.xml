@@ -4,7 +4,7 @@
 	license="http://www.opensource.org/licenses/bsd-license.php BSD"
 	author="Evgeniy Sokolov &lt;ewgraf@gmail.com&gt;"
 	DAExtends="\ewgraCms\DatabaseRequester"
-	namespace="ewgraCmsModule"
+	namespace="ewgraCmsModules"
 >
 	<Language namespace="\ewgraCms" generate="false"/>
 

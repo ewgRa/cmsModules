@@ -12,7 +12,7 @@
 		/**
 		 * @return UserRight401Controller
 		 */
-		public static function create(ChainController $controller = null)
+		public static function create(\ewgraFramework\ChainController $controller = null)
 		{
 			return new self($controller);	
 		}
@@ -27,11 +27,11 @@
 		}
 		
 		/**
-		 * @return ModelAndView
+		 * @return \ewgraFramework\ModelAndView
 		 */
 		public function handleRequest(
-			HttpRequest $request,
-			ModelAndView $mav
+			\ewgraFramework\HttpRequest $request,
+			\ewgraFramework\ModelAndView $mav
 		) {
 			$this->setRequiredRights(
 				Right::da()->getByAliases($this->requiredRightAliases)
@@ -39,19 +39,19 @@
 
 			try {
 				return parent::handleRequest($request, $mav);
-			} catch(PageAccessDeniedException $e) {
-				$pageHeader = $request->getAttachedVar(AttachedAliases::PAGE_HEADER);
+			} catch(\ewgraCms\PageAccessDeniedException $e) {
+				$pageHeader = $request->getAttachedVar(\ewgraCms\AttachedAliases::PAGE_HEADER);
 				
 				$pageHeader->
 					add('WWW-Authenticate', 'Basic realm="Enter you auth data"')->
 					add($request->getServerVar('SERVER_PROTOCOL').' 401 Unauthorized');
 				
 				return
-					ModelAndView::create()->
+					\ewgraFramework\ModelAndView::create()->
 					setView(
-						PhpView::create()->
+						\ewgraFramework\PhpView::create()->
 						loadLayout(
-							File::create()->
+							\ewgraFramework\File::create()->
 							setPath(
 								dirname(__FILE__).'/../../view/php/401unauthorized.php'
 							)

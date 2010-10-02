@@ -5,23 +5,27 @@
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
 	*/
-	final class UserController extends ChainController
+	final class UserController extends \ewgraFramework\ChainController
 	{
 		/**
-		 * @return ModelAndView
+		 * @return \ewgraFramework\ModelAndView
 		 */
 		public function handleRequest(
-			HttpRequest $request,
-			ModelAndView $mav
+			\ewgraFramework\HttpRequest $request,
+			\ewgraFramework\ModelAndView $mav
 		) {
 			$user = null;
 			
 			if (
-				Session::me()->isStarted()
-				&& Session::me()->has('userId')
+				\ewgraFramework\Session::me()->isStarted()
+				&& \ewgraFramework\Session::me()->has('userId')
 			) {
-				$user = User::da()->getById(Session::me()->get('userId'));
-				$request->setAttachedVar(AttachedAliases::USER, $user);
+				$user = 
+					User::da()->getById(
+						\ewgraFramework\Session::me()->get('userId')
+					);
+				
+				$request->setAttachedVar(\ewgraCms\AttachedAliases::USER, $user);
 			}
 			
 			return parent::handleRequest($request, $mav);

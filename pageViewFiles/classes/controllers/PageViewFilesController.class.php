@@ -5,7 +5,7 @@
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
 	*/
-	final class PageViewFilesController extends ChainController
+	final class PageViewFilesController extends \ewgraFramework\ChainController
 	{
 		private $joinContentTypes = array();
 		
@@ -14,7 +14,7 @@
 		/**
 		 * @return PageViewFilesController
 		 */
-		public function addJoinContentType(ContentType $contentType)
+		public function addJoinContentType(\ewgraFramework\ContentType $contentType)
 		{
 			$this->joinContentTypes[$contentType->getId()] = $contentType;
 			return $this;
@@ -34,12 +34,12 @@
 				$this->additionalJoinUrl = $settings['additionalJoinUrl'];
 			
 			if(isset($settings['joinContentTypes'])) {
-				Assert::isArray($settings['joinContentTypes']);
+				\ewgraFramework\Assert::isArray($settings['joinContentTypes']);
 				
 				foreach ($settings['joinContentTypes'] as $contentTypeName) {
-					$contentType = ContentType::createByName($contentTypeName);
+					$contentType = \ewgraFramework\ContentType::createByName($contentTypeName);
 					
-					Assert::isTrue(
+					\ewgraFramework\Assert::isTrue(
 						$contentType->canBeJoined(),
 						'Don\'t know how join content-type '.$contentType
 					);
@@ -52,20 +52,20 @@
 		}
 		
 		/**
-		 * @return ModelAndView
+		 * @return \ewgraFramework\ModelAndView
 		 */
 		public function handleRequest(
-			HttpRequest $request,
-			ModelAndView $mav
+			\ewgraFramework\HttpRequest $request,
+			\ewgraFramework\ModelAndView $mav
 		) {
 			$viewFiles = 
-				ViewFile::da()->getByPage(
-					$request->getAttachedVar(AttachedAliases::PAGE)
+				\ewgraCms\ViewFile::da()->getByPage(
+					$request->getAttachedVar(\ewgraCms\AttachedAliases::PAGE)
 				);
 			
 			$inheritanceFiles =
 				array_diff_assoc(
-					ViewFile::da()->getInheritanceByIds(array_keys($viewFiles)),
+					\ewgraCms\ViewFile::da()->getInheritanceByIds(array_keys($viewFiles)),
 					$viewFiles
 				);
 				
@@ -76,7 +76,7 @@
 				
 				$inheritanceFiles =
 					array_diff_assoc(
-						ViewFile::da()->getInheritanceByIds(
+						\ewgraCms\ViewFile::da()->getInheritanceByIds(
 							array_keys($inheritanceFiles)
 						),
 						$viewFiles
@@ -91,7 +91,7 @@
 			return parent::handleRequest($request, $mav);
 		}
 
-		private function joinFiles(HttpRequest $request, array $viewFiles)
+		private function joinFiles(\ewgraFramework\HttpRequest $request, array $viewFiles)
 		{
 			$files =
 				MediaFilesJoiner::create()->

@@ -31,7 +31,7 @@
 		public function getByUser(User $user)
 		{
 			return $this->getListCachedByQuery(
-				DatabaseQuery::create()->
+				\ewgraFramework\DatabaseQuery::create()->
 				setQuery("SELECT * FROM ".$this->getTable()." WHERE user_id = ?")->
 				setValues(array($user->getId()))
 			);

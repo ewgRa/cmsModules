@@ -5,7 +5,7 @@
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
 	*/
-	final class ContentStatus extends Enumeration
+	final class ContentStatus extends \ewgraFramework\Enumeration
 	{
 		const NORMAL	= 1;
 		const DELETED	= 2;

@@ -49,14 +49,14 @@
 		/**
 		 * @return JoinedViewFile
 		 */
-		public function setContentType(ContentType $contentType)
+		public function setContentType(\ewgraFramework\ContentType $contentType)
 		{
 			$this->contentType = $contentType;
 			return $this;
 		}
 		
 		/**
-		 * @return ContentType
+		 * @return \ewgraFramework\ContentType
 		 */
 		public function getContentType()
 		{
@@ -83,7 +83,7 @@
 			return $this->path;
 		}
 		
-		public function buildToFile(File $file)
+		public function buildToFile(\ewgraFramework\File $file)
 		{
 			$fileData = $this->getJoinedContent();
 			
@@ -93,7 +93,7 @@
 				$dir->make();
 				
 			$file->setContent($fileData);
-			$file->chmod(File::PERMISSIONS);
+			$file->chmod(\ewgraFramework\File::PERMISSIONS);
 			
 			$this->da()->dropByPath($this->getPath());
 			
@@ -105,7 +105,7 @@
 			$result = '';
 	
 			foreach ($this->getFiles() as $file) {
-				$url = HttpUrl::createFromString($file->getPath());
+				$url = \ewgraFramework\HttpUrl::createFromString($file->getPath());
 				
 				$result .= $url->downloadContent().PHP_EOL.PHP_EOL;
 			}

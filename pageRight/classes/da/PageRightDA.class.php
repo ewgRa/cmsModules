@@ -16,10 +16,10 @@
 			return parent::getInstance(__CLASS__);
 		}
 
-		public function getByPage(Page $page)
+		public function getByPage(\ewgraCms\Page $page)
 		{
 			return $this->getListCachedByQuery(
-				DatabaseQuery::create()->
+				\ewgraFramework\DatabaseQuery::create()->
 				setQuery("SELECT * FROM ".$this->getTable()." WHERE page_id = ?")->
 				setValues(array($page->getId()))
 			);

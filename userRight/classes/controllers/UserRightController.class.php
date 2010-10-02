@@ -5,7 +5,7 @@
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
 	*/
-	class UserRightController extends ChainController
+	class UserRightController extends \ewgraFramework\ChainController
 	{
 		private $requiredRights = array();
 		
@@ -16,15 +16,15 @@
 		}
 		
 		/**
-		 * @return ModelAndView
+		 * @return \ewgraFramework\ModelAndView
 		 */
 		public function handleRequest(
-			HttpRequest $request,
-			ModelAndView $mav
+			\ewgraFramework\HttpRequest $request,
+			\ewgraFramework\ModelAndView $mav
 		) {
 			$user =
-				$request->hasAttachedVar(AttachedAliases::USER)
-					? $request->getAttachedVar(AttachedAliases::USER)
+				$request->hasAttachedVar(\ewgraCms\AttachedAliases::USER)
+					? $request->getAttachedVar(\ewgraCms\AttachedAliases::USER)
 					: null;
 			
 			$result = true;
@@ -36,7 +36,7 @@
 				$result = $user->checkAccess($this->requiredRights);
 
 			if (!$result)
-				throw PageAccessDeniedException::create();
+				throw \ewgraCms\PageAccessDeniedException::create();
 						
 			return parent::handleRequest($request, $mav);
 		}

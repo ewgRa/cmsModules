@@ -5,7 +5,7 @@
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
 	*/
-	final class NavigationController extends ChainController
+	final class NavigationController extends \ewgraFramework\ChainController
 	{
 		private $categoryIds = null;
 		private $rightIds = null;
@@ -52,11 +52,11 @@
 		}
 		
 		/**
-		 * @return ModelAndView
+		 * @return \ewgraFramework\ModelAndView
 		 */
 		public function handleRequest(
-			HttpRequest $request,
-			ModelAndView $mav
+			\ewgraFramework\HttpRequest $request,
+			\ewgraFramework\ModelAndView $mav
 		) {
 			if ($this->checkAccess())
 				$mav->getModel()->merge($this->getData($request));
@@ -78,7 +78,7 @@
 				);
 		}
 		
-		private function getData(HttpRequest $request)
+		private function getData(\ewgraFramework\HttpRequest $request)
 		{
 			$result = array();
 			
@@ -93,7 +93,7 @@
 				NavigationData::da()->getList(
 					$result['navigationList'],
 					array(
-						$request->getAttachedVar(AttachedAliases::LOCALIZER)->
+						$request->getAttachedVar(\ewgraCms\AttachedAliases::LOCALIZER)->
 						getRequestLanguage()
 					)
 				);
@@ -104,7 +104,7 @@
 			}
 			
 			$result['baseUrl'] = 
-				$request->getAttachedVar(AttachedAliases::BASE_URL);
+				$request->getAttachedVar(\ewgraCms\AttachedAliases::BASE_URL);
 			
 			return $result;
 		}

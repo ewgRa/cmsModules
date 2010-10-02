@@ -3,7 +3,7 @@
 	
 	foreach ($files as $file) {
 		switch ($file->getContentType()->getId()) {
-			case ContentType::TEXT_JAVASCRIPT:
+			case \ewgraFramework\ContentType::TEXT_JAVASCRIPT:
 ?>
 	<script type="<?=$file->getContentType()?>" src="<?=$file->getPath()?>"></script>
 <?php

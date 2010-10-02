@@ -14,7 +14,7 @@
 		private $pageId = null;
 		
 		/**
-		 * @var Page
+		 * @var \ewgraCms\Page
 		 */
 		private $page = null;
 		
@@ -28,7 +28,7 @@
 		private $redirectPageId = null;
 		
 		/**
-		 * @var Page
+		 * @var \ewgraCms\Page
 		 */
 		private $redirectPage = null;
 		
@@ -52,7 +52,7 @@
 		
 		public function getId()
 		{
-			Assert::isNotNull($this->id);
+			\ewgraFramework\Assert::isNotNull($this->id);
 			return $this->id;
 		}
 		
@@ -75,7 +75,7 @@
 		/**
 		 * @return AutoPageRight
 		 */
-		public function setPage(Page $page)
+		public function setPage(\ewgraCms\Page $page)
 		{
 			$this->pageId = $page->getId();
 			$this->page = $page;
@@ -84,12 +84,12 @@
 		}
 		
 		/**
-		 * @return Page
+		 * @return \ewgraCms\Page
 		 */
 		public function getPage()
 		{
 			if (!$this->page && $this->getPageId())
-				$this->page = Page::da()->getById($this->getPageId());
+				$this->page = \ewgraCms\Page::da()->getById($this->getPageId());
 				
 			return $this->page;
 		}
@@ -151,7 +151,7 @@
 		/**
 		 * @return AutoPageRight
 		 */
-		public function setRedirectPage(Page $redirectPage)
+		public function setRedirectPage(\ewgraCms\Page $redirectPage)
 		{
 			$this->redirectPageId = $redirectPage->getId();
 			$this->redirectPage = $redirectPage;
@@ -160,12 +160,12 @@
 		}
 		
 		/**
-		 * @return Page
+		 * @return \ewgraCms\Page
 		 */
 		public function getRedirectPage()
 		{
 			if (!$this->redirectPage && $this->getRedirectPageId())
-				$this->redirectPage = Page::da()->getById($this->getRedirectPageId());
+				$this->redirectPage = \ewgraCms\Page::da()->getById($this->getRedirectPageId());
 				
 			return $this->redirectPage;
 		}

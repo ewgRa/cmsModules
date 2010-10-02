@@ -33,7 +33,7 @@
 			$dbQuery .= join(', ', $queryParts);
 			
 			$this->db()->query(
-				DatabaseQuery::create()->
+				\ewgraFramework\DatabaseQuery::create()->
 				setQuery($dbQuery)->
 				setValues($queryParams)
 			);
@@ -63,12 +63,12 @@
 			
 			$whereParts[] = 'id = ?';
 			$queryParams[] = $object->getId();
-			Assert::isNotEmpty($whereParts);
+			\ewgraFramework\Assert::isNotEmpty($whereParts);
 			
 			$dbQuery .= join(', ', $queryParts).' WHERE '.join(' AND ', $whereParts);
 
 			$this->db()->query(
-				DatabaseQuery::create()->
+				\ewgraFramework\DatabaseQuery::create()->
 				setQuery($dbQuery)->
 				setValues($queryParams)
 			);

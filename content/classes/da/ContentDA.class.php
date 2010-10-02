@@ -19,7 +19,7 @@
 		public function getByIds(array $ids)
 		{
 			return $this->getListCachedByQuery(
-				DatabaseQuery::create()->
+				\ewgraFramework\DatabaseQuery::create()->
 				setQuery(
 					"SELECT * FROM ".$this->getTable()
 					." WHERE id IN (?) AND status = ".ContentStatus::NORMAL

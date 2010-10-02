@@ -27,7 +27,7 @@
 			";
 			
 			return $this->getCachedByQuery(
-				DatabaseQuery::create()->
+				\ewgraFramework\DatabaseQuery::create()->
 				setQuery($dbQuery)->
 				setValues(array($navigation->getId(), $language->getId()))
 			);
@@ -43,19 +43,19 @@
 			$params = array();
 			
 			if ($navigationList) {
-				$params[] = ArrayUtils::getObjectIds($navigationList);
+				$params[] = \ewgraFramework\ArrayUtils::getObjectIds($navigationList);
 				$queryParts[] = 'navigation_id IN(?)';
 			}
 			
 			if ($languageList) {
-				$params[] = ArrayUtils::getObjectIds($languageList);
+				$params[] = \ewgraFramework\ArrayUtils::getObjectIds($languageList);
 				$queryParts[] = 'language_id IN(?)';
 			}
 			
 			$dbQuery .= ' WHERE '.join(' AND ', $queryParts);
 			
 			return $this->getListCachedByQuery(
-				DatabaseQuery::create()->
+				\ewgraFramework\DatabaseQuery::create()->
 				setQuery($dbQuery)->
 				setValues($params)
 			);

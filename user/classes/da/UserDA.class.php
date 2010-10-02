@@ -22,7 +22,7 @@
 		public function getByLogin($login)
 		{
 			return $this->getCachedByQuery(
-				DatabaseQuery::create()->
+				\ewgraFramework\DatabaseQuery::create()->
 				setQuery('SELECT * FROM '.$this->getTable().' WHERE login = ?')->
 				setValues(array($login))
 			);
@@ -41,7 +41,7 @@
 				';
 
 			return $this->getListCachedByQuery(
-				DatabaseQuery::create()->
+				\ewgraFramework\DatabaseQuery::create()->
 				setQuery($dbQuery)->
 				setValues(array($right->getId()))
 			);
@@ -53,7 +53,7 @@
 		public function getById($id)
 		{
 			return $this->getCachedByQuery(
-				DatabaseQuery::create()->
+				\ewgraFramework\DatabaseQuery::create()->
 				setQuery("SELECT * FROM ".$this->getTable()." WHERE id = ?")->
 				setValues(array($id))
 			);

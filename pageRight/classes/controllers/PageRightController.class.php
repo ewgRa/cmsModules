@@ -8,17 +8,17 @@
 	final class PageRightController extends UserRightController
 	{
 		/**
-		 * @return ModelAndView
+		 * @return \ewgraFramework\ModelAndView
 		 */
 		public function handleRequest(
-			HttpRequest $request,
-			ModelAndView $mav
+			\ewgraFramework\HttpRequest $request,
+			\ewgraFramework\ModelAndView $mav
 		) {
-			$page = $request->getAttachedVar(AttachedAliases::PAGE);
+			$page = $request->getAttachedVar(\ewgraCms\AttachedAliases::PAGE);
 			
 			$user =
-				$request->hasAttachedVar(AttachedAliases::USER)
-					? $request->getAttachedVar(AttachedAliases::USER)
+				$request->hasAttachedVar(\ewgraCms\AttachedAliases::USER)
+					? $request->getAttachedVar(\ewgraCms\AttachedAliases::USER)
 					: null;
 			
 			$pageRights = PageRight::da()->getByPage($page);
@@ -38,7 +38,7 @@
 
 			try {
 				return parent::handleRequest($request, $mav);
-			} catch(PageAccessDeniedException $e) {
+			} catch(\ewgraCms\PageAccessDeniedException $e) {
 				if (!$redirectPage)
 					throw $e;
 				
@@ -47,24 +47,24 @@
 		}
 
 		private function catchPageAccessDeniedException(
-			HttpRequest $request, 
-			Page $redirectPage
+			\ewgraFramework\HttpRequest $request, 
+			\ewgraCms\Page $redirectPage
 		) {
 			$url = 
-				HttpUrl::createFromString(
+				\ewgraFramework\HttpUrl::createFromString(
 					$redirectPage->getPath().'?backurl='
 					.base64_encode($request->getUrl())
 				);
 			
 			$request->setUrl($url);
 
-			$modelAndView = ModelAndView::create();
+			$modelAndView = \ewgraFramework\ModelAndView::create();
 			
 			$chainController = $this->getFirstController();
 
 			$mav = $chainController->handleRequest($request, $modelAndView);
 
-			$request->getAttachedVar(AttachedAliases::PAGE_HEADER)->
+			$request->getAttachedVar(\ewgraCms\AttachedAliases::PAGE_HEADER)->
 				add(
 					$request->getServerVar('SERVER_PROTOCOL')
 					.' 403 Forbidden'

@@ -22,7 +22,7 @@
 		public function get(Content $content, Language $language)
 		{
 			return $this->getCachedByQuery(
-				DatabaseQuery::create()->
+				\ewgraFramework\DatabaseQuery::create()->
 				setQuery(
 					"SELECT * FROM ".$this->getTable()
 					." WHERE content_id = ? AND language_id = ?"
@@ -41,19 +41,19 @@
 			$params = array();
 			
 			if ($contentList) {
-				$params[] = ArrayUtils::getObjectIds($contentList);
+				$params[] = \ewgraFramework\ArrayUtils::getObjectIds($contentList);
 				$queryParts[] = 'content_id IN(?)';
 			}
 			
 			if ($languageList) {
-				$params[] = ArrayUtils::getObjectIds($languageList);
+				$params[] = \ewgraFramework\ArrayUtils::getObjectIds($languageList);
 				$queryParts[] = 'language_id IN(?)';
 			}
 			
 			$dbQuery .= ' WHERE '.join(' AND ', $queryParts);
 			
 			return $this->getListCachedByQuery(
-				DatabaseQuery::create()->
+				\ewgraFramework\DatabaseQuery::create()->
 				setQuery($dbQuery)->
 				setValues($params)
 			);

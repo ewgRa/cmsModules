@@ -22,7 +22,7 @@
 		public function getByAlias($alias)
 		{
 			return $this->getCachedByQuery(
-				DatabaseQuery::create()->
+				\ewgraFramework\DatabaseQuery::create()->
 				setQuery('SELECT * FROM '.$this->getTable().' WHERE alias = ?')->
 				setValues(array($alias))
 			);

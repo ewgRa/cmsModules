@@ -6,15 +6,15 @@
 	DAExtends="\ewgraCms\DatabaseRequester"
 	namespace="ewgraCmsModules"
 >
-	<Page generate="false" />
+	<Page namespace="\ewgraCms" generate="false" />
 	<Right generate="false" />
 
 	<PageRight>
 		<properties>
 			<id />
-			<page class="Page" />
+			<page class="\ewgraCms\Page" />
 			<right class="Right" />
-			<redirectPage class="Page" />
+			<redirectPage class="\ewgraCms\Page" />
 		</properties>
 	</PageRight>
 </meta>

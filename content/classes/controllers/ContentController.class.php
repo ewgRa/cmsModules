@@ -5,7 +5,7 @@
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
 	*/
-	final class ContentController extends ChainController
+	final class ContentController extends \ewgraFramework\ChainController
 	{
 		private $units = null;
 		
@@ -25,18 +25,18 @@
 		
 		public function importSettings(array $settings = null)
 		{
-			Assert::isArray($settings['units']);
+			\ewgraFramework\Assert::isArray($settings['units']);
 			$this->setUnits($settings['units']);
 
 			return $this;
 		}
 		
 		/**
-		 * @return ModelAndView
+		 * @return \ewgraFramework\ModelAndView
 		 */
 		public function handleRequest(
-			HttpRequest $request,
-			ModelAndView $mav
+			\ewgraFramework\HttpRequest $request,
+			\ewgraFramework\ModelAndView $mav
 		) {
 			$result['contentList'] = Content::da()->getByIds($this->getUnits());
 			
@@ -46,7 +46,7 @@
 				ContentData::da()->getList(
 					$result['contentList'],
 					array(
-						$request->getAttachedVar(AttachedAliases::LOCALIZER)->
+						$request->getAttachedVar(\ewgraCms\AttachedAliases::LOCALIZER)->
 						getRequestLanguage()
 					)
 				);
@@ -66,13 +66,13 @@
 		/**
 		 * @return StringReplaceFilter
 		 */
-		private function getReplaceFilter(HttpRequest $request)
+		private function getReplaceFilter(\ewgraFramework\HttpRequest $request)
 		{
 			return
-				StringReplaceFilter::create()->
+				\ewgraFramework\StringReplaceFilter::create()->
 				addReplacement(
 					'%baseUrl%', 
-					$request->getAttachedVar(AttachedAliases::BASE_URL)->getPath()
+					$request->getAttachedVar(\ewgraCms\AttachedAliases::BASE_URL)->getPath()
 				);
 		}
 	}

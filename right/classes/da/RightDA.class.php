@@ -22,7 +22,7 @@
 		public function getByAlias($alias)
 		{
 			return $this->getCachedByQuery(
-				DatabaseQuery::create()->
+				\ewgraFramework\DatabaseQuery::create()->
 				setQuery("SELECT * FROM ".$this->getTable()." WHERE alias = ?")->
 				setValues(array($alias))
 			);
@@ -34,7 +34,7 @@
 		public function getByAliases(array $aliases)
 		{
 			return $this->getListCachedByQuery(
-				DatabaseQuery::create()->
+				\ewgraFramework\DatabaseQuery::create()->
 				setQuery("SELECT * FROM ".$this->getTable()." WHERE alias IN(?)")->
 				setValues(array($aliases))
 			);
@@ -46,7 +46,7 @@
 		public function getById($id)
 		{
 			return $this->getCachedByQuery(
-				DatabaseQuery::create()->
+				\ewgraFramework\DatabaseQuery::create()->
 				setQuery('SELECT * FROM '.$this->getTable().' WHERE id = ?')->
 				setValues(array($id))
 			);
@@ -58,7 +58,7 @@
 		public function getByIds(array $ids)
 		{
 			return $this->getListCachedByQuery(
-				DatabaseQuery::create()->
+				\ewgraFramework\DatabaseQuery::create()->
 				setQuery("SELECT * FROM ".$this->getTable()." WHERE id IN (?)")->
 				setValues(array($ids))
 			);
@@ -74,7 +74,7 @@
 			";
 			
 			return $this->getListCachedByQuery(
-				DatabaseQuery::create()->
+				\ewgraFramework\DatabaseQuery::create()->
 				setQuery($dbQuery)->
 				setValues(array($ids))
 			);

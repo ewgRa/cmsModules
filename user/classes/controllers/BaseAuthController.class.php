@@ -5,7 +5,7 @@
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
 	*/
-	abstract class BaseAuthController extends CmsActionChainController
+	abstract class BaseAuthController extends \ewgraCms\ActionChainController
 	{
 		const SUCCESS_LOGIN		= 1;
 		const WRONG_LOGIN		= 2;
@@ -14,7 +14,7 @@
 		/**
 		 * @return BaseAuthController
 		 */
-		public function __construct(ChainController $controller = null)
+		public function __construct(\ewgraFramework\ChainController $controller = null)
 		{
 			$this->
 				addAction('login', 'login')->
@@ -24,17 +24,21 @@
 			parent::__construct($controller);
 		}
 		
-		protected function logout(HttpRequest $request, ModelAndView $mav)
-		{
-			Session::me()->start();
-			Session::me()->drop('userId');
-			Session::me()->save();
+		protected function logout(
+			\ewgraFramework\HttpRequest $request, 
+			\ewgraFramework\ModelAndView $mav
+		) {
+			\ewgraFramework\Session::me()->start();
+			\ewgraFramework\Session::me()->drop('userId');
+			\ewgraFramework\Session::me()->save();
 			
 			return $this->continueHandleRequest($request, $mav);
 		}
 		
-		protected function login(HttpRequest $request, ModelAndView $mav)
-		{
+		protected function login(
+			\ewgraFramework\HttpRequest $request, 
+			\ewgraFramework\ModelAndView $mav
+		) {
 			$this->attachBackurlForm($request, $mav);
 						
 			$user = null;
@@ -45,9 +49,9 @@
 			
 			if (!$form->getErrors()) {
 				
-				Session::me()->start();
-				Session::me()->drop('userId');
-				Session::me()->save();
+				\ewgraFramework\Session::me()->start();
+				\ewgraFramework\Session::me()->drop('userId');
+				\ewgraFramework\Session::me()->save();
 	
 				$loginResult = self::SUCCESS_LOGIN;
 				
@@ -63,18 +67,18 @@
 					$loginResult = self::WRONG_PASSWORD;
 				
 				if ($loginResult == self::SUCCESS_LOGIN) {
-					$request->setAttachedVar(AttachedAliases::USER, $user);
+					$request->setAttachedVar(\ewgraCms\AttachedAliases::USER, $user);
 	
-					Session::me()->set('userId', $user->getId());
-					Session::me()->save();
+					\ewgraFramework\Session::me()->set('userId', $user->getId());
+					\ewgraFramework\Session::me()->save();
 					
 					if (
 						$backurl = 
 							$mav->getModel()->get('backurlForm')->getValue('backurl')
 					) {
-						$request->getAttachedVar(AttachedAliases::PAGE_HEADER)->
+						$request->getAttachedVar(\ewgraCms\AttachedAliases::PAGE_HEADER)->
 							addRedirect(
-								HttpUrl::createFromString(base64_decode($backurl))
+								\ewgraFramework\HttpUrl::createFromString(base64_decode($backurl))
 							);
 					}
 				}
@@ -88,8 +92,10 @@
 			return $this->continueHandleRequest($request, $mav);
 		}
 		
-		protected function showLoginForm(HttpRequest $request, ModelAndView $mav)
-		{
+		protected function showLoginForm(
+			\ewgraFramework\HttpRequest $request, 
+			\ewgraFramework\ModelAndView $mav
+		) {
 			$this->attachBackurlForm($request, $mav);
 			
 			return parent::handleRequest($request, $mav);
@@ -101,39 +107,43 @@
 		protected function createLoginForm()
 		{
 			return
-				Form::create()->
+				\ewgraFramework\Form::create()->
 				addPrimitive(
-					PrimitiveString::create('login')->setRequired()
+					\ewgraFramework\PrimitiveString::create('login')->setRequired()
 				)->
 				addPrimitive(
-					PrimitiveString::create('password')->setRequired()
+					\ewgraFramework\PrimitiveString::create('password')->setRequired()
 				);
 		}
 
-		protected function importLoginForm(HttpRequest $request, Form $form)
-		{
+		protected function importLoginForm(
+			\ewgraFramework\HttpRequest $request, 
+			\ewgraFramework\Form $form
+		) {
 			$form->import($request->getPost());
 			return $this;
 		}	
 
 		/**
-		 * @return Model
+		 * @return \ewgraFramework\Form
 		 */
 		private function createBackurlForm()
 		{
 			return
-				Form::create()->
-				addPrimitive(PrimitiveString::create('backurl'));
+				\ewgraFramework\Form::create()->
+				addPrimitive(\ewgraFramework\PrimitiveString::create('backurl'));
 		}
 
-		private function attachBackurlForm(HttpRequest $request, ModelAndView $mav)
-		{
+		private function attachBackurlForm(
+			\ewgraFramework\HttpRequest $request, 
+			\ewgraFramework\ModelAndView $mav
+		) {
 			$backurlForm = 
 				$this->createBackUrlForm()->
 				import($request->getPost() + $request->getGet());
 				
 			if ($backurlForm->getErrors())
-				throw new BadRequestException();
+				throw new \ewgraCms\BadRequestException();
 
 			$mav->getModel()->set('backurlForm', $backurlForm);
 			

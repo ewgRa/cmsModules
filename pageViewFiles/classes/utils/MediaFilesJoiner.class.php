@@ -58,7 +58,7 @@
 		
 		public function joinFiles(array $files)
 		{
-			Assert::isNotNull($this->getContentTypes());
+			\ewgraFramework\Assert::isNotNull($this->getContentTypes());
 			
 			$bufferJoinFiles = array();
 			
@@ -82,10 +82,10 @@
 			}
 			
 			foreach ($bufferJoinFiles as $contentTypeId => $files) {
-				$contentType = ContentType::create($contentTypeId);
+				$contentType = \ewgraFramework\ContentType::create($contentTypeId);
 
 				foreach ($files as $file) {
-					$url = HttpUrl::createFromString($file->getPath());
+					$url = \ewgraFramework\HttpUrl::createFromString($file->getPath());
 					
 					if (!$url->getHost()) {
 						$url->

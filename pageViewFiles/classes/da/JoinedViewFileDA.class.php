@@ -5,7 +5,7 @@
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
 	*/
-	final class JoinedViewFileDA extends Singleton
+	final class JoinedViewFileDA extends \ewgraFramework\Singleton
 	{
 		/**
 		 * @return JoinedViewFileDA
@@ -42,7 +42,7 @@
 				addKey($file->getPath())->
 				storeData($file);
 			
-			ViewFile::da()->addCacheTicketToTag($cacheTicket);
+			\ewgraCms\ViewFile::da()->addCacheTicketToTag($cacheTicket);
 			
 			return $this;
 		}
@@ -53,7 +53,7 @@
 		private function createCacheTicket()
 		{
 			return 
-				ViewFile::da()->createCacheTicket()->
+				\ewgraCms\ViewFile::da()->createCacheTicket()->
 				setKey(__CLASS__, __FUNCTION__);
 		}
 	}
