@@ -7,6 +7,14 @@
 	*/
 	final class BuildJoinFileController extends \ewgraFramework\ChainController
 	{
+		private $storageDir = null;
+		
+		public function setStorageDir($dir)
+		{
+			$this->storageDir = $dir;
+			return $this;	
+		}
+		
 		/**
 		 * @return \ewgraFramework\ModelAndView
 		 */
@@ -37,7 +45,10 @@
 				'fileContent',
 				$joinedViewFile->buildToFile(
 					\ewgraFramework\File::create()->
-					setPath(JOIN_FILES_DIR.DIRECTORY_SEPARATOR.basename($requestFile))
+					setPath(
+						$this->storageDir.DIRECTORY_SEPARATOR
+						.basename($requestFile)
+					)
 				)
 			);
 			
