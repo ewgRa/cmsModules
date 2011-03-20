@@ -21,17 +21,17 @@
 			$queryParams = array();
 			
 			if (!is_null($object->getNavigationId())) {
-				$queryParts[] = 'navigation_id = ?';
+				$queryParts[] = '`navigation_id` = ?';
 				$queryParams[] = $object->getNavigationId();
 			}
 			
 			if (!is_null($object->getLanguageId())) {
-				$queryParts[] = 'language_id = ?';
+				$queryParts[] = '`language_id` = ?';
 				$queryParams[] = $object->getLanguageId();
 			}
 			
 			if (!is_null($object->getText())) {
-				$queryParts[] = 'text = ?';
+				$queryParts[] = '`text` = ?';
 				$queryParams[] = $object->getText();
 			}
 			
@@ -61,11 +61,11 @@
 			$whereParts = array();
 			$queryParams = array();
 			
-			$queryParts[] = 'navigation_id = ?';
+			$queryParts[] = '`navigation_id` = ?';
 			$queryParams[] = $object->getNavigationId();
-			$queryParts[] = 'language_id = ?';
+			$queryParts[] = '`language_id` = ?';
 			$queryParams[] = $object->getLanguageId();
-			$queryParts[] = 'text = ?';
+			$queryParts[] = '`text` = ?';
 			$queryParams[] = $object->getText();
 			
 			$whereParts[] = 'id = ?';
@@ -86,9 +86,28 @@
 		}
 
 		/**
+		 * @return AutoNavigationDataDA
+		 */
+		public function delete(NavigationData $object)
+		{
+			$dbQuery =
+				'DELETE FROM '.$this->getTable().' WHERE id = '.$object->getId();
+			
+			$this->db()->query(
+				\ewgraFramework\DatabaseQuery::create()->setQuery($dbQuery)
+			);
+			 
+			$object->setId(null);
+			
+			$this->dropCache();
+			
+			return $this;
+		}
+
+		/**
 		 * @return NavigationData
 		 */
-		protected function build(array $array)
+		public function build(array $array)
 		{
 			return
 				NavigationData::create()->

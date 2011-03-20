@@ -19,7 +19,7 @@
 		/**
 		 * @return ContentData
 		 */
-		public function get(Content $content, Language $language)
+		public function get(Content $content, \ewgraCms\Language $language)
 		{
 			return $this->getCachedByQuery(
 				\ewgraFramework\DatabaseQuery::create()->

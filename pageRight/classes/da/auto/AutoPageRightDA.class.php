@@ -21,17 +21,17 @@
 			$queryParams = array();
 			
 			if (!is_null($object->getPageId())) {
-				$queryParts[] = 'page_id = ?';
+				$queryParts[] = '`page_id` = ?';
 				$queryParams[] = $object->getPageId();
 			}
 			
 			if (!is_null($object->getRightId())) {
-				$queryParts[] = 'right_id = ?';
+				$queryParts[] = '`right_id` = ?';
 				$queryParams[] = $object->getRightId();
 			}
 			
 			if (!is_null($object->getRedirectPageId())) {
-				$queryParts[] = 'redirect_page_id = ?';
+				$queryParts[] = '`redirect_page_id` = ?';
 				$queryParams[] = $object->getRedirectPageId();
 			}
 			
@@ -61,11 +61,11 @@
 			$whereParts = array();
 			$queryParams = array();
 			
-			$queryParts[] = 'page_id = ?';
+			$queryParts[] = '`page_id` = ?';
 			$queryParams[] = $object->getPageId();
-			$queryParts[] = 'right_id = ?';
+			$queryParts[] = '`right_id` = ?';
 			$queryParams[] = $object->getRightId();
-			$queryParts[] = 'redirect_page_id = ?';
+			$queryParts[] = '`redirect_page_id` = ?';
 			$queryParams[] = $object->getRedirectPageId();
 			
 			$whereParts[] = 'id = ?';
@@ -86,9 +86,28 @@
 		}
 
 		/**
+		 * @return AutoPageRightDA
+		 */
+		public function delete(PageRight $object)
+		{
+			$dbQuery =
+				'DELETE FROM '.$this->getTable().' WHERE id = '.$object->getId();
+			
+			$this->db()->query(
+				\ewgraFramework\DatabaseQuery::create()->setQuery($dbQuery)
+			);
+			 
+			$object->setId(null);
+			
+			$this->dropCache();
+			
+			return $this;
+		}
+
+		/**
 		 * @return PageRight
 		 */
-		protected function build(array $array)
+		public function build(array $array)
 		{
 			return
 				PageRight::create()->

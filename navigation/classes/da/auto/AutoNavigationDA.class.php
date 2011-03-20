@@ -21,12 +21,12 @@
 			$queryParams = array();
 			
 			if (!is_null($object->getCategoryId())) {
-				$queryParts[] = 'category_id = ?';
+				$queryParts[] = '`category_id` = ?';
 				$queryParams[] = $object->getCategoryId();
 			}
 			
 			if (!is_null($object->getUri())) {
-				$queryParts[] = 'uri = ?';
+				$queryParts[] = '`uri` = ?';
 				$queryParams[] = $object->getUri()->__toString();
 			}
 			
@@ -56,9 +56,9 @@
 			$whereParts = array();
 			$queryParams = array();
 			
-			$queryParts[] = 'category_id = ?';
+			$queryParts[] = '`category_id` = ?';
 			$queryParams[] = $object->getCategoryId();
-			$queryParts[] = 'uri = ?';
+			$queryParts[] = '`uri` = ?';
 			$queryParams[] = $object->getUri()->__toString();
 			
 			$whereParts[] = 'id = ?';
@@ -79,9 +79,28 @@
 		}
 
 		/**
+		 * @return AutoNavigationDA
+		 */
+		public function delete(Navigation $object)
+		{
+			$dbQuery =
+				'DELETE FROM '.$this->getTable().' WHERE id = '.$object->getId();
+			
+			$this->db()->query(
+				\ewgraFramework\DatabaseQuery::create()->setQuery($dbQuery)
+			);
+			 
+			$object->setId(null);
+			
+			$this->dropCache();
+			
+			return $this;
+		}
+
+		/**
 		 * @return Navigation
 		 */
-		protected function build(array $array)
+		public function build(array $array)
 		{
 			return
 				Navigation::create()->

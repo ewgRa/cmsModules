@@ -21,7 +21,7 @@
 			$queryParams = array();
 			
 			if (!is_null($object->getAlias())) {
-				$queryParts[] = 'alias = ?';
+				$queryParts[] = '`alias` = ?';
 				$queryParams[] = $object->getAlias();
 			}
 			
@@ -51,7 +51,7 @@
 			$whereParts = array();
 			$queryParams = array();
 			
-			$queryParts[] = 'alias = ?';
+			$queryParts[] = '`alias` = ?';
 			$queryParams[] = $object->getAlias();
 			
 			$whereParts[] = 'id = ?';
@@ -72,9 +72,28 @@
 		}
 
 		/**
+		 * @return AutoNavigationCategoryDA
+		 */
+		public function delete(NavigationCategory $object)
+		{
+			$dbQuery =
+				'DELETE FROM '.$this->getTable().' WHERE id = '.$object->getId();
+			
+			$this->db()->query(
+				\ewgraFramework\DatabaseQuery::create()->setQuery($dbQuery)
+			);
+			 
+			$object->setId(null);
+			
+			$this->dropCache();
+			
+			return $this;
+		}
+
+		/**
 		 * @return NavigationCategory
 		 */
-		protected function build(array $array)
+		public function build(array $array)
 		{
 			return
 				NavigationCategory::create()->

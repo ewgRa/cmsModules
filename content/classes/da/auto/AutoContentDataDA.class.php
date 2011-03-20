@@ -21,17 +21,17 @@
 			$queryParams = array();
 			
 			if (!is_null($object->getContentId())) {
-				$queryParts[] = 'content_id = ?';
+				$queryParts[] = '`content_id` = ?';
 				$queryParams[] = $object->getContentId();
 			}
 			
 			if (!is_null($object->getLanguageId())) {
-				$queryParts[] = 'language_id = ?';
+				$queryParts[] = '`language_id` = ?';
 				$queryParams[] = $object->getLanguageId();
 			}
 			
 			if (!is_null($object->getText())) {
-				$queryParts[] = 'text = ?';
+				$queryParts[] = '`text` = ?';
 				$queryParams[] = $object->getText();
 			}
 			
@@ -61,11 +61,11 @@
 			$whereParts = array();
 			$queryParams = array();
 			
-			$queryParts[] = 'content_id = ?';
+			$queryParts[] = '`content_id` = ?';
 			$queryParams[] = $object->getContentId();
-			$queryParts[] = 'language_id = ?';
+			$queryParts[] = '`language_id` = ?';
 			$queryParams[] = $object->getLanguageId();
-			$queryParts[] = 'text = ?';
+			$queryParts[] = '`text` = ?';
 			$queryParams[] = $object->getText();
 			
 			$whereParts[] = 'id = ?';
@@ -86,9 +86,28 @@
 		}
 
 		/**
+		 * @return AutoContentDataDA
+		 */
+		public function delete(ContentData $object)
+		{
+			$dbQuery =
+				'DELETE FROM '.$this->getTable().' WHERE id = '.$object->getId();
+			
+			$this->db()->query(
+				\ewgraFramework\DatabaseQuery::create()->setQuery($dbQuery)
+			);
+			 
+			$object->setId(null);
+			
+			$this->dropCache();
+			
+			return $this;
+		}
+
+		/**
 		 * @return ContentData
 		 */
-		protected function build(array $array)
+		public function build(array $array)
 		{
 			return
 				ContentData::create()->

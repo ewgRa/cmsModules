@@ -21,7 +21,7 @@
 			$queryParams = array();
 			
 			if (!is_null($object->getStatus())) {
-				$queryParts[] = 'status = ?';
+				$queryParts[] = '`status` = ?';
 				$queryParams[] = $object->getStatus()->getId();
 			}
 			
@@ -51,7 +51,7 @@
 			$whereParts = array();
 			$queryParams = array();
 			
-			$queryParts[] = 'status = ?';
+			$queryParts[] = '`status` = ?';
 			$queryParams[] = $object->getStatus()->getId();
 			
 			$whereParts[] = 'id = ?';
@@ -72,9 +72,28 @@
 		}
 
 		/**
+		 * @return AutoContentDA
+		 */
+		public function delete(Content $object)
+		{
+			$dbQuery =
+				'DELETE FROM '.$this->getTable().' WHERE id = '.$object->getId();
+			
+			$this->db()->query(
+				\ewgraFramework\DatabaseQuery::create()->setQuery($dbQuery)
+			);
+			 
+			$object->setId(null);
+			
+			$this->dropCache();
+			
+			return $this;
+		}
+
+		/**
 		 * @return Content
 		 */
-		protected function build(array $array)
+		public function build(array $array)
 		{
 			return
 				Content::create()->

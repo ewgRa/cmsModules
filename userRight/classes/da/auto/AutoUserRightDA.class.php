@@ -21,12 +21,12 @@
 			$queryParams = array();
 			
 			if (!is_null($object->getUserId())) {
-				$queryParts[] = 'user_id = ?';
+				$queryParts[] = '`user_id` = ?';
 				$queryParams[] = $object->getUserId();
 			}
 			
 			if (!is_null($object->getRightId())) {
-				$queryParts[] = 'right_id = ?';
+				$queryParts[] = '`right_id` = ?';
 				$queryParams[] = $object->getRightId();
 			}
 			
@@ -56,9 +56,9 @@
 			$whereParts = array();
 			$queryParams = array();
 			
-			$queryParts[] = 'user_id = ?';
+			$queryParts[] = '`user_id` = ?';
 			$queryParams[] = $object->getUserId();
-			$queryParts[] = 'right_id = ?';
+			$queryParts[] = '`right_id` = ?';
 			$queryParams[] = $object->getRightId();
 			
 			$whereParts[] = 'id = ?';
@@ -79,9 +79,28 @@
 		}
 
 		/**
+		 * @return AutoUserRightDA
+		 */
+		public function delete(UserRight $object)
+		{
+			$dbQuery =
+				'DELETE FROM '.$this->getTable().' WHERE id = '.$object->getId();
+			
+			$this->db()->query(
+				\ewgraFramework\DatabaseQuery::create()->setQuery($dbQuery)
+			);
+			 
+			$object->setId(null);
+			
+			$this->dropCache();
+			
+			return $this;
+		}
+
+		/**
 		 * @return UserRight
 		 */
-		protected function build(array $array)
+		public function build(array $array)
 		{
 			return
 				UserRight::create()->

@@ -21,12 +21,12 @@
 			$queryParams = array();
 			
 			if (!is_null($object->getLogin())) {
-				$queryParts[] = 'login = ?';
+				$queryParts[] = '`login` = ?';
 				$queryParams[] = $object->getLogin();
 			}
 			
 			if (!is_null($object->getPassword())) {
-				$queryParts[] = 'password = ?';
+				$queryParts[] = '`password` = ?';
 				$queryParams[] = $object->getPassword();
 			}
 			
@@ -56,9 +56,9 @@
 			$whereParts = array();
 			$queryParams = array();
 			
-			$queryParts[] = 'login = ?';
+			$queryParts[] = '`login` = ?';
 			$queryParams[] = $object->getLogin();
-			$queryParts[] = 'password = ?';
+			$queryParts[] = '`password` = ?';
 			$queryParams[] = $object->getPassword();
 			
 			$whereParts[] = 'id = ?';
@@ -79,9 +79,28 @@
 		}
 
 		/**
+		 * @return AutoUserDA
+		 */
+		public function delete(User $object)
+		{
+			$dbQuery =
+				'DELETE FROM '.$this->getTable().' WHERE id = '.$object->getId();
+			
+			$this->db()->query(
+				\ewgraFramework\DatabaseQuery::create()->setQuery($dbQuery)
+			);
+			 
+			$object->setId(null);
+			
+			$this->dropCache();
+			
+			return $this;
+		}
+
+		/**
 		 * @return User
 		 */
-		protected function build(array $array)
+		public function build(array $array)
 		{
 			return
 				User::create()->

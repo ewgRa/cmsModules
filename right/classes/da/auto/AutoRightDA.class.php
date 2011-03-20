@@ -21,17 +21,17 @@
 			$queryParams = array();
 			
 			if (!is_null($object->getAlias())) {
-				$queryParts[] = 'alias = ?';
+				$queryParts[] = '`alias` = ?';
 				$queryParams[] = $object->getAlias();
 			}
 			
 			if (!is_null($object->getName())) {
-				$queryParts[] = 'name = ?';
+				$queryParts[] = '`name` = ?';
 				$queryParams[] = $object->getName();
 			}
 			
 			if (!is_null($object->getRole())) {
-				$queryParts[] = 'role = ?';
+				$queryParts[] = '`role` = ?';
 				$queryParams[] = $object->getRole();
 			}
 			
@@ -61,11 +61,11 @@
 			$whereParts = array();
 			$queryParams = array();
 			
-			$queryParts[] = 'alias = ?';
+			$queryParts[] = '`alias` = ?';
 			$queryParams[] = $object->getAlias();
-			$queryParts[] = 'name = ?';
+			$queryParts[] = '`name` = ?';
 			$queryParams[] = $object->getName();
-			$queryParts[] = 'role = ?';
+			$queryParts[] = '`role` = ?';
 			$queryParams[] = $object->getRole();
 			
 			$whereParts[] = 'id = ?';
@@ -86,16 +86,35 @@
 		}
 
 		/**
+		 * @return AutoRightDA
+		 */
+		public function delete(Right $object)
+		{
+			$dbQuery =
+				'DELETE FROM '.$this->getTable().' WHERE id = '.$object->getId();
+			
+			$this->db()->query(
+				\ewgraFramework\DatabaseQuery::create()->setQuery($dbQuery)
+			);
+			 
+			$object->setId(null);
+			
+			$this->dropCache();
+			
+			return $this;
+		}
+
+		/**
 		 * @return Right
 		 */
-		protected function build(array $array)
+		public function build(array $array)
 		{
 			return
 				Right::create()->
 				setId($array['id'])->
 				setAlias($array['alias'])->
 				setName($array['name'])->
-				setRole($array['role'] == true);
+				setRole($array['role'] == null ? null : $array['role'] == true);
 		}
 	}
 ?>
