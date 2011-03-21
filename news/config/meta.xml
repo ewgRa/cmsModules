@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE meta []>
+<meta 
+	license="http://www.opensource.org/licenses/bsd-license.php BSD"
+	author="Evgeniy Sokolov &lt;ewgraf@gmail.com&gt;"
+	DAExtends="\ewgraCms\DatabaseRequester"
+	namespace="ewgraCmsModules"
+>
+	<Language namespace="\ewgraCms" generate="false"/>
+
+	<News>
+		<properties>
+			<id />
+			<uri />
+			<created />
+			<modified />
+		</properties>
+	</News>
+	
+	<NewsData>
+		<properties>
+			<id />
+			<news class="News" />
+			<language class="\ewgraCms\Language" />
+			<title />
+			<shortText />
+			<text />
+		</properties>
+	</NewsData>
+</meta>
