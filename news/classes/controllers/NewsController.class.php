@@ -11,6 +11,7 @@
 		const NEWS_LIMIT = 3;
 		
 		private $newsData = null;
+		private $limit = null;
 		
 		/**
 		 * @return NewsController
@@ -26,6 +27,14 @@
 			parent::__construct($controller);
 		}
 
+		public function importSettings(array $settings = null)
+		{
+			if (isset($settings['limit']))
+				$this->limit = $settings['limit'];
+				
+			return $this;
+		}
+		
 		public function replacePageData(\ewgraCms\PageData $pageData)
 		{
 			if ($this->newsData) {
@@ -45,7 +54,12 @@
 			\ewgraFramework\HttpRequest $request,
 			\ewgraFramework\ModelAndView $mav
 		) {
-			$newsList = News::da()->getList(self::NEWS_LIMIT);
+			$newsList =
+				News::da()->getList(
+					$this->limit ?
+						$this->limit :
+						self::NEWS_LIMIT
+				);
 			
 			$newsDataList = array();
 			
