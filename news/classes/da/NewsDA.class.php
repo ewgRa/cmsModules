@@ -41,5 +41,19 @@
 				setValues(array($id))
 			);
 		}
+
+		/**
+		 * @return News
+		 */
+		public function getByUri($uri)
+		{
+			$dbQuery = 'SELECT * FROM '.$this->getTable().' WHERE uri=?';
+
+			return $this->getCachedByQuery(
+				\ewgraFramework\DatabaseQuery::create()->
+				setQuery($dbQuery)->
+				setValues(array($uri))
+			);
+		}
 	}
 ?>
