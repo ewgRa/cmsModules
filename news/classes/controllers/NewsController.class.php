@@ -32,7 +32,7 @@
 			if (isset($settings['limit']))
 				$this->limit = $settings['limit'];
 				
-			return $this;
+			return parent::importSettings($settings);
 		}
 		
 		public function replacePageData(\ewgraCms\PageData $pageData)
