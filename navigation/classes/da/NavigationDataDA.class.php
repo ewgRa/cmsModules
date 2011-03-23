@@ -19,7 +19,7 @@
 		/**
 		 * @return NavigationData
 		 */
-		public function get(Navigation $navigation, Language $language)
+		public function get(Navigation $navigation, \ewgraCms\Language $language)
 		{
 			$dbQuery = "
 				SELECT * FROM " . $this->getTable() . "

@@ -15,6 +15,11 @@
 			self::HIDDEN 	=> 'hidden'
 		);
 		
+		protected $title = array(
+			self::NORMAL 	=> 'Видна',
+			self::HIDDEN 	=> 'Скрыта'
+		);
+		
 		/**
 		 * @return NavigationStatus
 		 */
@@ -45,6 +50,11 @@
 		public static function hidden()
 		{
 			return self::create(self::HIDDEN);
+		}
+		
+		public function getTitle()
+		{
+			return $this->title[$this->getId()];
 		}
 	}
 ?>
