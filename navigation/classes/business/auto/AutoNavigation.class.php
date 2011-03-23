@@ -26,6 +26,11 @@
 		private $position = null;
 		
 		/**
+		 * @var NavigationStatus
+		 */
+		private $status = null;
+		
+		/**
 		 * @return NavigationDA
 		 */
 		public static function da()
@@ -118,6 +123,24 @@
 		public function getPosition()
 		{
 			return $this->position;
+		}
+		
+		/**
+		 * @return AutoNavigation
+		 */
+		public function setStatus(NavigationStatus $status)
+		{
+			$this->status = $status;
+
+			return $this;
+		}
+		
+		/**
+		 * @return NavigationStatus
+		 */
+		public function getStatus()
+		{
+			return $this->status;
 		}
 	}
 ?>

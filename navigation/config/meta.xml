@@ -7,6 +7,7 @@
 	namespace="ewgraCmsModules"
 >
 	<Language namespace="\ewgraCms" generate="false" />
+	<NavigationStatus type="Enumeration" />
 
 	<HttpUrl namespace="\ewgraFramework" type="Stringable" />
 
@@ -23,6 +24,7 @@
 			<category class="NavigationCategory" />
 			<uri class="\ewgraFramework\HttpUrl" />
 			<position nullable="true" />
+			<status class="NavigationStatus" />
 		</properties>
 	</Navigation>
 	

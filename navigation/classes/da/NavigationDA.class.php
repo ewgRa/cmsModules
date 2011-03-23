@@ -20,7 +20,7 @@
 		{
 			$dbQuery = "
 				SELECT * FROM ".$this->getTable()."
-				WHERE category_id = ?
+				WHERE category_id = ? AND status = ".NavigationStatus::NORMAL."
 				ORDER BY position IS NULL, position ASC
 			";
 			

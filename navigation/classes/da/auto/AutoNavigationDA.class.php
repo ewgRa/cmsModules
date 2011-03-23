@@ -35,6 +35,11 @@
 				$queryParams[] = $object->getPosition();
 			}
 			
+			if (!is_null($object->getStatus())) {
+				$queryParts[] = '`status` = ?';
+				$queryParams[] = $object->getStatus()->getId();
+			}
+			
 			$dbQuery .= join(', ', $queryParts);
 			
 			$this->db()->query(
@@ -67,6 +72,8 @@
 			$queryParams[] = $object->getUri()->__toString();
 			$queryParts[] = '`position` = ?';
 			$queryParams[] = $object->getPosition();
+			$queryParts[] = '`status` = ?';
+			$queryParams[] = $object->getStatus()->getId();
 			
 			$whereParts[] = 'id = ?';
 			$queryParams[] = $object->getId();
@@ -114,7 +121,8 @@
 				setId($array['id'])->
 				setCategoryId($array['category_id'])->
 				setUri(\ewgraFramework\HttpUrl::createFromString($array['uri']))->
-				setPosition($array['position']);
+				setPosition($array['position'])->
+				setStatus(NavigationStatus::create($array['status']));
 		}
 
 		public function dropCache()
