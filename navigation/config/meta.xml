@@ -23,7 +23,7 @@
 			<id />
 			<category class="NavigationCategory" />
 			<uri class="\ewgraFramework\HttpUrl" />
-			<position nullable="true" />
+			<position />
 			<status class="NavigationStatus" />
 		</properties>
 	</Navigation>

@@ -113,7 +113,7 @@
 		/**
 		 * @return AutoNavigation
 		 */
-		public function setPosition($position = null)
+		public function setPosition($position)
 		{
 			$this->position = $position;
 
