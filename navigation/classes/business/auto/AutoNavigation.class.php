@@ -23,6 +23,8 @@
 		 */
 		private $uri = null;
 		
+		private $position = null;
+		
 		/**
 		 * @return NavigationDA
 		 */
@@ -101,6 +103,21 @@
 		public function getUri()
 		{
 			return $this->uri;
+		}
+		
+		/**
+		 * @return AutoNavigation
+		 */
+		public function setPosition($position = null)
+		{
+			$this->position = $position;
+
+			return $this;
+		}
+		
+		public function getPosition()
+		{
+			return $this->position;
 		}
 	}
 ?>

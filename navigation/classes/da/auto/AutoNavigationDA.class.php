@@ -30,6 +30,11 @@
 				$queryParams[] = $object->getUri()->__toString();
 			}
 			
+			if (!is_null($object->getPosition())) {
+				$queryParts[] = '`position` = ?';
+				$queryParams[] = $object->getPosition();
+			}
+			
 			$dbQuery .= join(', ', $queryParts);
 			
 			$this->db()->query(
@@ -60,6 +65,8 @@
 			$queryParams[] = $object->getCategoryId();
 			$queryParts[] = '`uri` = ?';
 			$queryParams[] = $object->getUri()->__toString();
+			$queryParts[] = '`position` = ?';
+			$queryParams[] = $object->getPosition();
 			
 			$whereParts[] = 'id = ?';
 			$queryParams[] = $object->getId();
@@ -106,7 +113,8 @@
 				Navigation::create()->
 				setId($array['id'])->
 				setCategoryId($array['category_id'])->
-				setUri(\ewgraFramework\HttpUrl::createFromString($array['uri']));
+				setUri(\ewgraFramework\HttpUrl::createFromString($array['uri']))->
+				setPosition($array['position']);
 		}
 
 		public function dropCache()
