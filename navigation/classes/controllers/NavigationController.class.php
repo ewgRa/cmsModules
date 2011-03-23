@@ -103,7 +103,7 @@
 					$navigationData;
 			}
 			
-			$result['baseUrl'] = 
+			$result['baseUrl'] =
 				$request->getAttachedVar(\ewgraCms\AttachedAliases::BASE_URL);
 			
 			return $result;

@@ -21,6 +21,7 @@
 			$dbQuery = "
 				SELECT * FROM ".$this->getTable()."
 				WHERE category_id = ?
+				ORDER BY position IS NULL, position ASC
 			";
 			
 			return $this->getListCachedByQuery(
