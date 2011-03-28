@@ -79,7 +79,7 @@
 		 */
 		public function setRole($role = true)
 		{
-			$this->role = ($role === true);
+			$this->role = ($role === null ? null : ($role === true));
 
 			return $this;
 		}
