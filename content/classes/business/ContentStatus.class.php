@@ -1,6 +1,6 @@
 <?php
 	namespace ewgraCmsModules;
-	
+
 	/**
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
@@ -9,12 +9,12 @@
 	{
 		const NORMAL	= 1;
 		const DELETED	= 2;
-		
+
 		protected $names = array(
 			self::NORMAL 	=> 'normal',
 			self::DELETED 	=> 'deleted'
 		);
-		
+
 		/**
 		 * @return ContentStatus
 		 */
@@ -22,7 +22,7 @@
 		{
 			return new self($id);
 		}
-		
+
 		/**
 		 * @return ContentStatus
 		 */
@@ -30,7 +30,7 @@
 		{
 			return self::normal();
 		}
-		
+
 		/**
 		 * @return ContentStatus
 		 */

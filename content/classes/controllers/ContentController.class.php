@@ -1,6 +1,6 @@
 <?php
 	namespace ewgraCmsModules;
-	
+
 	/**
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
@@ -8,7 +8,7 @@
 	final class ContentController extends \ewgraFramework\ChainController
 	{
 		private $units = null;
-		
+
 		/**
 		 * @return ContentController
 		 */
@@ -17,12 +17,12 @@
 			$this->units = $units;
 			return $this;
 		}
-		
+
 		public function getUnits()
 		{
 			return $this->units;
 		}
-		
+
 		public function importSettings(array $settings = null)
 		{
 			\ewgraFramework\Assert::isArray($settings['units']);
@@ -30,7 +30,7 @@
 
 			return $this;
 		}
-		
+
 		/**
 		 * @return \ewgraFramework\ModelAndView
 		 */
@@ -39,9 +39,9 @@
 			\ewgraFramework\ModelAndView $mav
 		) {
 			$result['contentList'] = Content::da()->getByIds($this->getUnits());
-			
+
 			$result['contentDataList'] = array();
-			
+
 			$contentDataList =
 				ContentData::da()->getList(
 					$result['contentList'],
@@ -50,16 +50,16 @@
 						getRequestLanguage()
 					)
 				);
-			
+
 			foreach ($contentDataList as $contentData) {
 				$result['contentDataList'][$contentData->getContentId()] =
 					$contentData;
 			}
-			
+
 			$result['replaceFilter'] = $this->getReplaceFilter($request);
-		
+
 			$mav->getModel()->merge($result);
-			
+
 			return parent::handleRequest($request, $mav);
 		}
 
@@ -71,7 +71,7 @@
 			return
 				\ewgraFramework\StringReplaceFilter::create()->
 				addReplacement(
-					'%baseUrl%', 
+					'%baseUrl%',
 					$request->getAttachedVar(\ewgraCms\AttachedAliases::BASE_URL)->getPath()
 				);
 		}

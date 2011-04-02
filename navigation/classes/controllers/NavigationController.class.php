@@ -1,6 +1,6 @@
 <?php
 	namespace ewgraCmsModules;
-	
+
 	/**
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
@@ -9,7 +9,7 @@
 	{
 		private $categoryIds = null;
 		private $rightIds = null;
-		
+
 		/**
 		 * @return NavigationController
 		 */
@@ -18,12 +18,12 @@
 			$this->categoryIds = $categoryIds;
 			return $this;
 		}
-		
+
 		public function getCategoryIds()
 		{
 			return $this->categoryIds;
 		}
-		
+
 		/**
 		 * @return NavigationController
 		 */
@@ -32,25 +32,25 @@
 			$this->rightIds = $rightIds;
 			return $this;
 		}
-		
+
 		public function getRightIds()
 		{
 			return $this->rightIds;
 		}
-		
+
 		/**
 		 * @return NavigationController
 		 */
 		public function importSettings(array $settings = null)
 		{
 			$this->setCategoryIds($settings['categories']);
-			
+
 			if (isset($settings['rights']))
 				$this->setRightIds($settings['rights']);
 
 			return $this;
 		}
-		
+
 		/**
 		 * @return \ewgraFramework\ModelAndView
 		 */
@@ -60,35 +60,35 @@
 		) {
 			if ($this->checkAccess())
 				$mav->getModel()->merge($this->getData($request));
-				
+
 			return parent::handleRequest($request, $mav);
 		}
-		
+
 		private function checkAccess()
 		{
 			if (!$this->getRightIds())
 				return true;
-			
+
 			if (!$this->hasUser())
 				return false;
-			
+
 			return
 				$this->getUser()->checkAccess(
 					Right::da()->getByIds($this->getRightIds())
 				);
 		}
-		
+
 		private function getData(\ewgraFramework\HttpRequest $request)
 		{
 			$result = array();
-			
+
 			$result['navigationList'] =
 				Navigation::da()->getByCategoryIds(
 					$this->getCategoryIds()
 				);
 
 			$result['navigationDataList'] = array();
-			
+
 			$navigationDataList =
 				NavigationData::da()->getList(
 					$result['navigationList'],
@@ -97,15 +97,15 @@
 						getRequestLanguage()
 					)
 				);
-				
+
 			foreach ($navigationDataList as $navigationData) {
 				$result['navigationDataList'][$navigationData->getNavigationId()] =
 					$navigationData;
 			}
-			
+
 			$result['baseUrl'] =
 				$request->getAttachedVar(\ewgraCms\AttachedAliases::BASE_URL);
-			
+
 			return $result;
 		}
 	}

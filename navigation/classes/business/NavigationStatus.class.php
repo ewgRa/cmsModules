@@ -1,6 +1,6 @@
 <?php
 	namespace ewgraCmsModules;
-	
+
 	/**
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
@@ -9,17 +9,17 @@
 	{
 		const NORMAL	= 1;
 		const HIDDEN	= 2;
-		
+
 		protected $names = array(
 			self::NORMAL 	=> 'normal',
 			self::HIDDEN 	=> 'hidden'
 		);
-		
+
 		protected $title = array(
 			self::NORMAL 	=> 'Видна',
 			self::HIDDEN 	=> 'Скрыта'
 		);
-		
+
 		/**
 		 * @return NavigationStatus
 		 */
@@ -27,7 +27,7 @@
 		{
 			return new self($id);
 		}
-		
+
 		/**
 		 * @return NavigationStatus
 		 */
@@ -35,7 +35,7 @@
 		{
 			return self::normal();
 		}
-		
+
 		/**
 		 * @return NavigationStatus
 		 */
@@ -51,7 +51,7 @@
 		{
 			return self::create(self::HIDDEN);
 		}
-		
+
 		public function getTitle()
 		{
 			return $this->title[$this->getId()];

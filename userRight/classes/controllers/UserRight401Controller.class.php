@@ -1,6 +1,6 @@
 <?php
 	namespace ewgraCmsModules;
-	
+
 	/**
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
@@ -8,15 +8,15 @@
 	final class UserRight401Controller extends UserRightController
 	{
 		private $requiredRightAliases = array();
-		
+
 		/**
 		 * @return UserRight401Controller
 		 */
 		public static function create(\ewgraFramework\ChainController $controller = null)
 		{
-			return new self($controller);	
+			return new self($controller);
 		}
-		
+
 		/**
 		 * @return UserRight401Controller
 		 */
@@ -25,7 +25,7 @@
 			$this->requiredRightAliases = $aliases;
 			return $this;
 		}
-		
+
 		/**
 		 * @return \ewgraFramework\ModelAndView
 		 */
@@ -41,11 +41,11 @@
 				return parent::handleRequest($request, $mav);
 			} catch(\ewgraCms\PageAccessDeniedException $e) {
 				$pageHeader = $request->getAttachedVar(\ewgraCms\AttachedAliases::PAGE_HEADER);
-				
+
 				$pageHeader->
 					add('WWW-Authenticate', 'Basic realm="Enter you auth data"')->
 					add($request->getServerVar('SERVER_PROTOCOL').' 401 Unauthorized');
-				
+
 				return
 					\ewgraFramework\ModelAndView::create()->
 					setView(

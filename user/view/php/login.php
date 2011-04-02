@@ -1,6 +1,6 @@
 <?php
 	namespace ewgraCmsModules;
-	
+
 	if (!isset($loginResult) || $loginResult != BaseAuthController::SUCCESS_LOGIN) {
 ?>
 	<form method="post">
