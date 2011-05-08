@@ -107,6 +107,9 @@
 					if ($this->additionalJoinUrl)
 						$file->setPath($this->additionalJoinUrl.'/'.$file->getPath());
 
+					if (defined('ewgraCmsModules\JOIN_FILES_VERSION'))
+						$file->setPath($file->getPath().'?v='.JOIN_FILES_VERSION);
+
 					$joinedFile =
 						\ewgraFramework\File::create()->
 						setPath(
