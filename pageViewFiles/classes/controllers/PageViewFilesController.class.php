@@ -99,12 +99,23 @@
 				setContentTypes($this->getJoinContentTypes())->
 				joinFiles($viewFiles);
 
+			if (!defined('ewgraCmsModules\JOIN_FILES_DIR'))
+				throw new \Exception('please, define ewgraCmsModules\JOIN_FILES_DIR first');
+
 			foreach ($files as $file) {
 				if($file instanceof JoinedViewFile) {
 					if ($this->additionalJoinUrl)
 						$file->setPath($this->additionalJoinUrl.'/'.$file->getPath());
 
-					$file->da()->insert($file);
+					$joinedFile =
+						\ewgraFramework\File::create()->
+						setPath(
+							JOIN_FILES_DIR.DIRECTORY_SEPARATOR
+							.basename($file->getPath())
+						);
+
+					if (!$joinedFile->isExists())
+						$file->buildToFile($joinedFile);
 				}
 			}
 
