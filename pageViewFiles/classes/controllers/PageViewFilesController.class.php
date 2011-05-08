@@ -107,15 +107,15 @@
 					if ($this->additionalJoinUrl)
 						$file->setPath($this->additionalJoinUrl.'/'.$file->getPath());
 
-					if (defined('ewgraCmsModules\JOIN_FILES_VERSION'))
-						$file->setPath($file->getPath().'?v='.JOIN_FILES_VERSION);
-
 					$joinedFile =
 						\ewgraFramework\File::create()->
 						setPath(
 							JOIN_FILES_DIR.DIRECTORY_SEPARATOR
 							.basename($file->getPath())
 						);
+
+					if (defined('ewgraCmsModules\JOIN_FILES_VERSION'))
+						$file->setPath($file->getPath().'?v='.JOIN_FILES_VERSION);
 
 					if (!$joinedFile->isExists())
 						$file->buildToFile($joinedFile);
