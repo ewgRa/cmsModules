@@ -93,14 +93,14 @@
 
 		private function joinFiles(\ewgraFramework\HttpRequest $request, array $viewFiles)
 		{
+			if (!defined('ewgraCmsModules\JOIN_FILES_DIR'))
+				throw new \Exception('please, define ewgraCmsModules\JOIN_FILES_DIR first');
+
 			$files =
 				MediaFilesJoiner::create()->
 				setDefaultHost($request->getServerVar('SERVER_NAME'))->
 				setContentTypes($this->getJoinContentTypes())->
 				joinFiles($viewFiles);
-
-			if (!defined('ewgraCmsModules\JOIN_FILES_DIR'))
-				throw new \Exception('please, define ewgraCmsModules\JOIN_FILES_DIR first');
 
 			foreach ($files as $file) {
 				if($file instanceof JoinedViewFile) {
