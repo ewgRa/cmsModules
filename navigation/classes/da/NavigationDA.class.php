@@ -10,10 +10,11 @@
 	{
 		/**
 		 * @return NavigationDA
+		 * method needed for methods hinting
 		 */
 		public static function me()
 		{
-			return parent::getInstance(__CLASS__);
+			return parent::me();
 		}
 
 		public function getByCategoryIds(array $ids)
