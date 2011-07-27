@@ -19,6 +19,7 @@
 			$this->
 				addAction('login', 'login')->
 				addAction('logout', 'logout')->
+				addAction('showLoginForm', 'showLoginForm')->
 				setDefaultAction('showLoginForm');
 
 			parent::__construct($controller);
@@ -98,7 +99,7 @@
 		) {
 			$this->attachBackurlForm($request, $mav);
 
-			return parent::handleRequest($request, $mav);
+			return $this->continueHandleRequest($request, $mav);
 		}
 
 		/**
