@@ -97,7 +97,7 @@
 			foreach ($this->getFiles() as $file) {
 				$url = \ewgraFramework\HttpUrl::createFromString($file->getPath());
 
-				$content = $url->downloadContent();
+				$content = file_get_contents((string)$url);
 
 				if ($this->getContentType()->getId() == \ewgraFramework\ContentType::TEXT_CSS)
 					$content = $this->importCss($content, $url);
@@ -131,7 +131,7 @@
 
 					$content = str_replace(
 						'%IMPORT_'.$match[1].'%',
-						$this->importCss($importUrl->downloadContent(), $importUrl),
+						$this->importCss(file_get_contents((string)$importUrl), $importUrl),
 						$content
 					);
 				}
