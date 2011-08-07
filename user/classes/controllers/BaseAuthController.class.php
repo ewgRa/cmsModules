@@ -31,7 +31,6 @@
 		) {
 			\ewgraFramework\Session::me()->start();
 			\ewgraFramework\Session::me()->drop('userId');
-			\ewgraFramework\Session::me()->save();
 
 			return $this->continueHandleRequest($request, $mav);
 		}
@@ -52,7 +51,6 @@
 
 				\ewgraFramework\Session::me()->start();
 				\ewgraFramework\Session::me()->drop('userId');
-				\ewgraFramework\Session::me()->save();
 
 				$loginResult = self::SUCCESS_LOGIN;
 
@@ -71,7 +69,6 @@
 					$request->setAttachedVar(\ewgraCms\AttachedAliases::USER, $user);
 
 					\ewgraFramework\Session::me()->set('userId', $user->getId());
-					\ewgraFramework\Session::me()->save();
 
 					if (
 						$backurl =
