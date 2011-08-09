@@ -53,6 +53,7 @@
 
 		/**
 		 * @return \ewgraFramework\ModelAndView
+		 * FIXME: separate layout and viewfile inheritances, layout view files has priority
 		 */
 		public function handleRequest(
 			\ewgraFramework\HttpRequest $request,
