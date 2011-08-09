@@ -64,7 +64,7 @@
 				);
 
 			$inheritanceFiles =
-				array_diff_assoc(
+				array_diff_key(
 					\ewgraCms\ViewFile::da()->getInheritanceByIds(array_keys($viewFiles)),
 					$viewFiles
 				);
@@ -75,7 +75,7 @@
 				$viewFiles = $viewFiles+$inheritanceFiles;
 
 				$inheritanceFiles =
-					array_diff_assoc(
+					array_diff_key(
 						\ewgraCms\ViewFile::da()->getInheritanceByIds(
 							array_keys($inheritanceFiles)
 						),
