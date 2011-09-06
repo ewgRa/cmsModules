@@ -19,16 +19,20 @@
 			$dbQuery = 'INSERT INTO '.$this->getTable().' SET ';
 			$queryParts = array();
 			$queryParams = array();
+			$queryParts[] = '`login` = ?';
+			$queryParams[] = $object->getLogin();
+			$queryParts[] = '`password` = ?';
+			$queryParams[] = $object->getPassword();
+			$queryParts[] = '`email` = ?';
+			$queryParams[] = $object->getEmail();
 
-			if (!is_null($object->getLogin())) {
-				$queryParts[] = '`login` = ?';
-				$queryParams[] = $object->getLogin();
+			if ($object->getEmailConfirmHash() === null)
+				$queryParts[] = '`email_confirm_hash` = NULL';
+			else {
+				$queryParts[] = '`email_confirm_hash` = ?';
+				$queryParams[] = $object->getEmailConfirmHash();
 			}
 
-			if (!is_null($object->getPassword())) {
-				$queryParts[] = '`password` = ?';
-				$queryParams[] = $object->getPassword();
-			}
 
 			$dbQuery .= join(', ', $queryParts);
 
@@ -60,6 +64,16 @@
 			$queryParams[] = $object->getLogin();
 			$queryParts[] = '`password` = ?';
 			$queryParams[] = $object->getPassword();
+			$queryParts[] = '`email` = ?';
+			$queryParams[] = $object->getEmail();
+
+			if ($object->getEmailConfirmHash() === null)
+				$queryParts[] = '`email_confirm_hash` = NULL';
+			else {
+				$queryParts[] = '`email_confirm_hash` = ?';
+				$queryParams[] = $object->getEmailConfirmHash();
+			}
+
 
 			$whereParts[] = 'id = ?';
 			$queryParams[] = $object->getId();
@@ -124,7 +138,9 @@
 				User::create()->
 				setId($array['id'])->
 				setLogin($array['login'])->
-				setPassword($array['password']);
+				setPassword($array['password'])->
+				setEmail($array['email'])->
+				setEmailConfirmHash($array['email_confirm_hash']);
 		}
 	}
 ?>

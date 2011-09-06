@@ -15,6 +15,10 @@
 
 		private $password = null;
 
+		private $email = null;
+
+		private $emailConfirmHash = null;
+
 		/**
 		 * @return UserDA
 		 */
@@ -67,6 +71,36 @@
 		public function getPassword()
 		{
 			return $this->password;
+		}
+
+		/**
+		 * @return AutoUser
+		 */
+		public function setEmail($email)
+		{
+			$this->email = $email;
+
+			return $this;
+		}
+
+		public function getEmail()
+		{
+			return $this->email;
+		}
+
+		/**
+		 * @return AutoUser
+		 */
+		public function setEmailConfirmHash($emailConfirmHash = null)
+		{
+			$this->emailConfirmHash = $emailConfirmHash;
+
+			return $this;
+		}
+
+		public function getEmailConfirmHash()
+		{
+			return $this->emailConfirmHash;
 		}
 	}
 ?>

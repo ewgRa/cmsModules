@@ -11,6 +11,8 @@
 			<id />
 			<login />
 			<password />
+			<email />
+			<emailConfirmHash nullable="true" />
 		</properties>
 	</User>
 </meta>
