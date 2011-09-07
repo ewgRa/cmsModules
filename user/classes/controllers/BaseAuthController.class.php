@@ -25,6 +25,11 @@
 			parent::__construct($controller);
 		}
 
+		public static function getPasswordHash($password)
+		{
+			return md5(USER_PASSWORD_SALT.$password);
+		}
+
 		protected function logout(
 			\ewgraFramework\HttpRequest $request,
 			\ewgraFramework\ModelAndView $mav
@@ -61,7 +66,7 @@
 
 				if (
 					$user
-					&& $user->getPassword() != md5($form->getValue('password'))
+					&& $user->getPassword() != $this->getPasswordHash($form->getValue('password'))
 				)
 					$loginResult = self::WRONG_PASSWORD;
 
