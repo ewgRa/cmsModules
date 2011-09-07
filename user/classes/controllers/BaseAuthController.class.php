@@ -10,6 +10,7 @@
 		const SUCCESS_LOGIN		= 1;
 		const WRONG_LOGIN		= 2;
 		const WRONG_PASSWORD	= 3;
+		const EMAIL_NOT_CONFIRMED = 4;
 
 		/**
 		 * @return BaseAuthController
@@ -69,6 +70,12 @@
 					&& $user->getPassword() != $this->getPasswordHash($form->getValue('password'))
 				)
 					$loginResult = self::WRONG_PASSWORD;
+
+				if (
+					$loginResult == self::SUCCESS_LOGIN
+					&& $user->getEmailConfirmHash()
+				)
+					$loginResult = self::EMAIL_NOT_CONFIRMED;
 
 				if ($loginResult == self::SUCCESS_LOGIN) {
 					$request->setAttachedVar(\ewgraCms\AttachedAliases::USER, $user);
