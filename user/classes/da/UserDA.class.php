@@ -32,6 +32,18 @@
 		/**
 		 * @return User
 		 */
+		public function getByEmail($email)
+		{
+			return $this->getCachedByQuery(
+				\ewgraFramework\DatabaseQuery::create()->
+				setQuery('SELECT * FROM '.$this->getTable().' WHERE email = ?')->
+				setValues(array($email))
+			);
+		}
+
+		/**
+		 * @return User
+		 */
 		public function getByRight(Right $right)
 		{
 			$dbQuery = '
