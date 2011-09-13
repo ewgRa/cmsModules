@@ -23,6 +23,14 @@
 			$queryParams[] = $object->getLogin();
 			$queryParts[] = '`password` = ?';
 			$queryParams[] = $object->getPassword();
+
+			if ($object->getChangePasswordHash() === null)
+				$queryParts[] = '`change_password_hash` = NULL';
+			else {
+				$queryParts[] = '`change_password_hash` = ?';
+				$queryParams[] = $object->getChangePasswordHash();
+			}
+
 			$queryParts[] = '`email` = ?';
 			$queryParams[] = $object->getEmail();
 
@@ -64,6 +72,14 @@
 			$queryParams[] = $object->getLogin();
 			$queryParts[] = '`password` = ?';
 			$queryParams[] = $object->getPassword();
+
+			if ($object->getChangePasswordHash() === null)
+				$queryParts[] = '`change_password_hash` = NULL';
+			else {
+				$queryParts[] = '`change_password_hash` = ?';
+				$queryParams[] = $object->getChangePasswordHash();
+			}
+
 			$queryParts[] = '`email` = ?';
 			$queryParams[] = $object->getEmail();
 
@@ -139,6 +155,7 @@
 				setId($array['id'])->
 				setLogin($array['login'])->
 				setPassword($array['password'])->
+				setChangePasswordHash($array['change_password_hash'])->
 				setEmail($array['email'])->
 				setEmailConfirmHash($array['email_confirm_hash']);
 		}

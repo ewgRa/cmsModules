@@ -11,6 +11,7 @@
 			<id />
 			<login />
 			<password />
+			<changePasswordHash nullable="true" />
 			<email />
 			<emailConfirmHash nullable="true" />
 		</properties>

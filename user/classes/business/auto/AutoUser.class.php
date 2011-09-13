@@ -15,6 +15,8 @@
 
 		private $password = null;
 
+		private $changePasswordHash = null;
+
 		private $email = null;
 
 		private $emailConfirmHash = null;
@@ -71,6 +73,21 @@
 		public function getPassword()
 		{
 			return $this->password;
+		}
+
+		/**
+		 * @return AutoUser
+		 */
+		public function setChangePasswordHash($changePasswordHash = null)
+		{
+			$this->changePasswordHash = $changePasswordHash;
+
+			return $this;
+		}
+
+		public function getChangePasswordHash()
+		{
+			return $this->changePasswordHash;
 		}
 
 		/**
