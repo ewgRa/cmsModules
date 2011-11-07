@@ -36,6 +36,9 @@
 		 */
 		public function getByAliases(array $aliases)
 		{
+			if (!$aliases)
+				return array();
+
 			$upperAliases = array();
 
 			foreach ($aliases as $alias)
@@ -50,6 +53,9 @@
 
 		public function getByInheritanceIds(array $ids)
 		{
+			if (!$ids)
+				return array();
+
 			$dbQuery = "
 				SELECT t1.* FROM ".$this->getTable()." t1
 				INNER JOIN ".$this->escapeTable('right_inheritance')." t2

@@ -19,6 +19,9 @@
 
 		public function getByIds(array $ids)
 		{
+			if (!$ids)
+				return array();
+
 			return $this->getListCachedByQuery(
 				\ewgraFramework\DatabaseQuery::create()->
 				setQuery(
