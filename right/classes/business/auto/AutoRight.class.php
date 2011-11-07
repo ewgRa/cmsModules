@@ -29,6 +29,14 @@
 		}
 
 		/**
+		 * @return RightProto
+		 */
+		public static function proto()
+		{
+			return RightProto::me();
+		}
+
+		/**
 		 * @return AutoRight
 		 */
 		public function setId($id)

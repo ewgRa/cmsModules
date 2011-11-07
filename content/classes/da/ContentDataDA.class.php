@@ -38,7 +38,7 @@
 		) {
 			$dbQuery = "SELECT * FROM " . $this->getTable();
 
-			$queryParts = array('1');
+			$queryParts = array();
 			$params = array();
 
 			if ($contentList) {
@@ -51,7 +51,8 @@
 				$queryParts[] = 'language_id IN(?)';
 			}
 
-			$dbQuery .= ' WHERE '.join(' AND ', $queryParts);
+			if ($queryParts)
+				$dbQuery .= ' WHERE '.join(' AND ', $queryParts);
 
 			return $this->getListCachedByQuery(
 				\ewgraFramework\DatabaseQuery::create()->

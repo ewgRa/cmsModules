@@ -41,6 +41,14 @@
 		}
 
 		/**
+		 * @return PageRightProto
+		 */
+		public static function proto()
+		{
+			return PageRightProto::me();
+		}
+
+		/**
 		 * @return AutoPageRight
 		 */
 		public function setId($id)

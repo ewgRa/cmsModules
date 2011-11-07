@@ -30,6 +30,14 @@
 		}
 
 		/**
+		 * @return UserProto
+		 */
+		public static function proto()
+		{
+			return UserProto::me();
+		}
+
+		/**
 		 * @return AutoUser
 		 */
 		public function setId($id)

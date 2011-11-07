@@ -40,6 +40,14 @@
 		}
 
 		/**
+		 * @return NewsDataProto
+		 */
+		public static function proto()
+		{
+			return NewsDataProto::me();
+		}
+
+		/**
 		 * @return AutoNewsData
 		 */
 		public function setId($id)

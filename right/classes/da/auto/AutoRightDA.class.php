@@ -9,41 +9,52 @@
 	 */
 	abstract class AutoRightDA extends \ewgraCms\DatabaseRequester
 	{
-		protected $tableAlias = 'Right';
+		protected $tableAlias = 'right';
 
 		/**
 		 * @return Right
 		 */
 		public function insert(Right $object)
 		{
-			$dbQuery = 'INSERT INTO '.$this->getTable().' SET ';
-			$queryParts = array();
-			$queryParams = array();
+			$dialect = $this->db()->getDialect();
 
-			if (!is_null($object->getAlias())) {
-				$queryParts[] = '`alias` = ?';
-				$queryParams[] = $object->getAlias();
+			$dbQuery = 'INSERT INTO '.$this->getTable().' ';
+			$fields = array();
+			$fieldValues = array();
+			$values = array();
+			$fields[] = $dialect->escapeField('alias');
+			$fieldValues[] = '?';
+			$values[] = $object->getAlias();
+			$fields[] = $dialect->escapeField('name');
+			$fieldValues[] = '?';
+
+			if ($object->getName() === null)
+				$values[] = null;
+			else {
+				$values[] = $object->getName();
 			}
 
-			if (!is_null($object->getName())) {
-				$queryParts[] = '`name` = ?';
-				$queryParams[] = $object->getName();
+			$fields[] = $dialect->escapeField('role');
+			$fieldValues[] = '?';
+
+			if ($object->getRole() === null)
+				$values[] = null;
+			else {
+				$values[] = $object->getRole();
 			}
 
-			if (!is_null($object->getRole())) {
-				$queryParts[] = '`role` = ?';
-				$queryParams[] = $object->getRole();
-			}
+			$dbQuery .= '('.join(', ', $fields).') VALUES ';
+			$dbQuery .= '('.join(', ', $fieldValues).')';
 
-			$dbQuery .= join(', ', $queryParts);
+			$dbResult =
+				$this->db()->insertQuery(
+					\ewgraFramework\DatabaseInsertQuery::create()->
+					setPrimaryField('id')->
+					setQuery($dbQuery)->
+					setValues($values)
+				);
 
-			$this->db()->query(
-				\ewgraFramework\DatabaseQuery::create()->
-				setQuery($dbQuery)->
-				setValues($queryParams)
-			);
-
-			$object->setId($this->db()->getInsertedId());
+			$object->setId($dbResult->getInsertedId());
 
 			$this->dropCache();
 
@@ -55,27 +66,28 @@
 		 */
 		public function save(Right $object)
 		{
+			$dialect = $this->db()->getDialect();
 			$dbQuery = 'UPDATE '.$this->getTable().' SET ';
 
 			$queryParts = array();
 			$whereParts = array();
 			$queryParams = array();
 
-			$queryParts[] = '`alias` = ?';
+			$queryParts[] = $dialect->escapeField('alias').' = ?';
 			$queryParams[] = $object->getAlias();
 
 			if ($object->getName() === null)
-				$queryParts[] = '`name` = NULL';
+				$queryParts[] = $dialect->escapeField('name').' = NULL';
 			else {
-				$queryParts[] = '`name` = ?';
+				$queryParts[] = $dialect->escapeField('name').' = ?';
 				$queryParams[] = $object->getName();
 			}
 
 
 			if ($object->getRole() === null)
-				$queryParts[] = '`role` = NULL';
+				$queryParts[] = $dialect->escapeField('role').' = NULL';
 			else {
-				$queryParts[] = '`role` = ?';
+				$queryParts[] = $dialect->escapeField('role').' = ?';
 				$queryParams[] = $object->getRole();
 			}
 
@@ -144,7 +156,7 @@
 				setId($array['id'])->
 				setAlias($array['alias'])->
 				setName($array['name'])->
-				setRole($array['role'] == null ? null : $array['role'] == true);
+				setRole($array['role'] === null ? null : $array['role'] == true);
 		}
 	}
 ?>

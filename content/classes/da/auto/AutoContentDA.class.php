@@ -9,31 +9,34 @@
 	 */
 	abstract class AutoContentDA extends \ewgraCms\DatabaseRequester
 	{
-		protected $tableAlias = 'Content';
+		protected $tableAlias = 'content';
 
 		/**
 		 * @return Content
 		 */
 		public function insert(Content $object)
 		{
-			$dbQuery = 'INSERT INTO '.$this->getTable().' SET ';
-			$queryParts = array();
-			$queryParams = array();
+			$dialect = $this->db()->getDialect();
 
-			if (!is_null($object->getStatus())) {
-				$queryParts[] = '`status` = ?';
-				$queryParams[] = $object->getStatus()->getId();
-			}
+			$dbQuery = 'INSERT INTO '.$this->getTable().' ';
+			$fields = array();
+			$fieldValues = array();
+			$values = array();
+			$fields[] = $dialect->escapeField('status');
+			$fieldValues[] = '?';
+			$values[] = $object->getStatus()->getId();
+			$dbQuery .= '('.join(', ', $fields).') VALUES ';
+			$dbQuery .= '('.join(', ', $fieldValues).')';
 
-			$dbQuery .= join(', ', $queryParts);
+			$dbResult =
+				$this->db()->insertQuery(
+					\ewgraFramework\DatabaseInsertQuery::create()->
+					setPrimaryField('id')->
+					setQuery($dbQuery)->
+					setValues($values)
+				);
 
-			$this->db()->query(
-				\ewgraFramework\DatabaseQuery::create()->
-				setQuery($dbQuery)->
-				setValues($queryParams)
-			);
-
-			$object->setId($this->db()->getInsertedId());
+			$object->setId($dbResult->getInsertedId());
 
 			$this->dropCache();
 
@@ -45,13 +48,14 @@
 		 */
 		public function save(Content $object)
 		{
+			$dialect = $this->db()->getDialect();
 			$dbQuery = 'UPDATE '.$this->getTable().' SET ';
 
 			$queryParts = array();
 			$whereParts = array();
 			$queryParams = array();
 
-			$queryParts[] = '`status` = ?';
+			$queryParts[] = $dialect->escapeField('status').' = ?';
 			$queryParams[] = $object->getStatus()->getId();
 
 			$whereParts[] = 'id = ?';

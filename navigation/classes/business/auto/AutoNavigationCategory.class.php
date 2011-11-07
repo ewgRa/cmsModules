@@ -22,6 +22,14 @@
 		}
 
 		/**
+		 * @return NavigationCategoryProto
+		 */
+		public static function proto()
+		{
+			return NavigationCategoryProto::me();
+		}
+
+		/**
 		 * @return AutoNavigationCategory
 		 */
 		public function setId($id)

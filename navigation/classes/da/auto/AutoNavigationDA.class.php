@@ -9,46 +9,43 @@
 	 */
 	abstract class AutoNavigationDA extends \ewgraCms\DatabaseRequester
 	{
-		protected $tableAlias = 'Navigation';
+		protected $tableAlias = 'navigation';
 
 		/**
 		 * @return Navigation
 		 */
 		public function insert(Navigation $object)
 		{
-			$dbQuery = 'INSERT INTO '.$this->getTable().' SET ';
-			$queryParts = array();
-			$queryParams = array();
+			$dialect = $this->db()->getDialect();
 
-			if (!is_null($object->getCategoryId())) {
-				$queryParts[] = '`category_id` = ?';
-				$queryParams[] = $object->getCategoryId();
-			}
+			$dbQuery = 'INSERT INTO '.$this->getTable().' ';
+			$fields = array();
+			$fieldValues = array();
+			$values = array();
+			$fields[] = $dialect->escapeField('category_id');
+			$fieldValues[] = '?';
+			$values[] = $object->getCategoryId();
+			$fields[] = $dialect->escapeField('uri');
+			$fieldValues[] = '?';
+			$values[] = $object->getUri()->__toString();
+			$fields[] = $dialect->escapeField('position');
+			$fieldValues[] = '?';
+			$values[] = $object->getPosition();
+			$fields[] = $dialect->escapeField('status');
+			$fieldValues[] = '?';
+			$values[] = $object->getStatus()->getId();
+			$dbQuery .= '('.join(', ', $fields).') VALUES ';
+			$dbQuery .= '('.join(', ', $fieldValues).')';
 
-			if (!is_null($object->getUri())) {
-				$queryParts[] = '`uri` = ?';
-				$queryParams[] = $object->getUri()->__toString();
-			}
+			$dbResult =
+				$this->db()->insertQuery(
+					\ewgraFramework\DatabaseInsertQuery::create()->
+					setPrimaryField('id')->
+					setQuery($dbQuery)->
+					setValues($values)
+				);
 
-			if (!is_null($object->getPosition())) {
-				$queryParts[] = '`position` = ?';
-				$queryParams[] = $object->getPosition();
-			}
-
-			if (!is_null($object->getStatus())) {
-				$queryParts[] = '`status` = ?';
-				$queryParams[] = $object->getStatus()->getId();
-			}
-
-			$dbQuery .= join(', ', $queryParts);
-
-			$this->db()->query(
-				\ewgraFramework\DatabaseQuery::create()->
-				setQuery($dbQuery)->
-				setValues($queryParams)
-			);
-
-			$object->setId($this->db()->getInsertedId());
+			$object->setId($dbResult->getInsertedId());
 
 			$this->dropCache();
 
@@ -60,19 +57,20 @@
 		 */
 		public function save(Navigation $object)
 		{
+			$dialect = $this->db()->getDialect();
 			$dbQuery = 'UPDATE '.$this->getTable().' SET ';
 
 			$queryParts = array();
 			$whereParts = array();
 			$queryParams = array();
 
-			$queryParts[] = '`category_id` = ?';
+			$queryParts[] = $dialect->escapeField('category_id').' = ?';
 			$queryParams[] = $object->getCategoryId();
-			$queryParts[] = '`uri` = ?';
+			$queryParts[] = $dialect->escapeField('uri').' = ?';
 			$queryParams[] = $object->getUri()->__toString();
-			$queryParts[] = '`position` = ?';
+			$queryParts[] = $dialect->escapeField('position').' = ?';
 			$queryParams[] = $object->getPosition();
-			$queryParts[] = '`status` = ?';
+			$queryParts[] = $dialect->escapeField('status').' = ?';
 			$queryParams[] = $object->getStatus()->getId();
 
 			$whereParts[] = 'id = ?';

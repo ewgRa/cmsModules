@@ -9,51 +9,46 @@
 	 */
 	abstract class AutoNewsDataDA extends \ewgraCms\DatabaseRequester
 	{
-		protected $tableAlias = 'NewsData';
+		protected $tableAlias = 'news_data';
 
 		/**
 		 * @return NewsData
 		 */
 		public function insert(NewsData $object)
 		{
-			$dbQuery = 'INSERT INTO '.$this->getTable().' SET ';
-			$queryParts = array();
-			$queryParams = array();
+			$dialect = $this->db()->getDialect();
 
-			if (!is_null($object->getNewsId())) {
-				$queryParts[] = '`news_id` = ?';
-				$queryParams[] = $object->getNewsId();
-			}
+			$dbQuery = 'INSERT INTO '.$this->getTable().' ';
+			$fields = array();
+			$fieldValues = array();
+			$values = array();
+			$fields[] = $dialect->escapeField('news_id');
+			$fieldValues[] = '?';
+			$values[] = $object->getNewsId();
+			$fields[] = $dialect->escapeField('language_id');
+			$fieldValues[] = '?';
+			$values[] = $object->getLanguageId();
+			$fields[] = $dialect->escapeField('title');
+			$fieldValues[] = '?';
+			$values[] = $object->getTitle();
+			$fields[] = $dialect->escapeField('short_text');
+			$fieldValues[] = '?';
+			$values[] = $object->getShortText();
+			$fields[] = $dialect->escapeField('text');
+			$fieldValues[] = '?';
+			$values[] = $object->getText();
+			$dbQuery .= '('.join(', ', $fields).') VALUES ';
+			$dbQuery .= '('.join(', ', $fieldValues).')';
 
-			if (!is_null($object->getLanguageId())) {
-				$queryParts[] = '`language_id` = ?';
-				$queryParams[] = $object->getLanguageId();
-			}
+			$dbResult =
+				$this->db()->insertQuery(
+					\ewgraFramework\DatabaseInsertQuery::create()->
+					setPrimaryField('id')->
+					setQuery($dbQuery)->
+					setValues($values)
+				);
 
-			if (!is_null($object->getTitle())) {
-				$queryParts[] = '`title` = ?';
-				$queryParams[] = $object->getTitle();
-			}
-
-			if (!is_null($object->getShortText())) {
-				$queryParts[] = '`short_text` = ?';
-				$queryParams[] = $object->getShortText();
-			}
-
-			if (!is_null($object->getText())) {
-				$queryParts[] = '`text` = ?';
-				$queryParams[] = $object->getText();
-			}
-
-			$dbQuery .= join(', ', $queryParts);
-
-			$this->db()->query(
-				\ewgraFramework\DatabaseQuery::create()->
-				setQuery($dbQuery)->
-				setValues($queryParams)
-			);
-
-			$object->setId($this->db()->getInsertedId());
+			$object->setId($dbResult->getInsertedId());
 
 			$this->dropCache();
 
@@ -65,21 +60,22 @@
 		 */
 		public function save(NewsData $object)
 		{
+			$dialect = $this->db()->getDialect();
 			$dbQuery = 'UPDATE '.$this->getTable().' SET ';
 
 			$queryParts = array();
 			$whereParts = array();
 			$queryParams = array();
 
-			$queryParts[] = '`news_id` = ?';
+			$queryParts[] = $dialect->escapeField('news_id').' = ?';
 			$queryParams[] = $object->getNewsId();
-			$queryParts[] = '`language_id` = ?';
+			$queryParts[] = $dialect->escapeField('language_id').' = ?';
 			$queryParams[] = $object->getLanguageId();
-			$queryParts[] = '`title` = ?';
+			$queryParts[] = $dialect->escapeField('title').' = ?';
 			$queryParams[] = $object->getTitle();
-			$queryParts[] = '`short_text` = ?';
+			$queryParts[] = $dialect->escapeField('short_text').' = ?';
 			$queryParams[] = $object->getShortText();
-			$queryParts[] = '`text` = ?';
+			$queryParts[] = $dialect->escapeField('text').' = ?';
 			$queryParams[] = $object->getText();
 
 			$whereParts[] = 'id = ?';

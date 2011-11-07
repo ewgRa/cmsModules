@@ -9,41 +9,40 @@
 	 */
 	abstract class AutoNavigationDataDA extends \ewgraCms\DatabaseRequester
 	{
-		protected $tableAlias = 'NavigationData';
+		protected $tableAlias = 'navigation_data';
 
 		/**
 		 * @return NavigationData
 		 */
 		public function insert(NavigationData $object)
 		{
-			$dbQuery = 'INSERT INTO '.$this->getTable().' SET ';
-			$queryParts = array();
-			$queryParams = array();
+			$dialect = $this->db()->getDialect();
 
-			if (!is_null($object->getNavigationId())) {
-				$queryParts[] = '`navigation_id` = ?';
-				$queryParams[] = $object->getNavigationId();
-			}
+			$dbQuery = 'INSERT INTO '.$this->getTable().' ';
+			$fields = array();
+			$fieldValues = array();
+			$values = array();
+			$fields[] = $dialect->escapeField('navigation_id');
+			$fieldValues[] = '?';
+			$values[] = $object->getNavigationId();
+			$fields[] = $dialect->escapeField('language_id');
+			$fieldValues[] = '?';
+			$values[] = $object->getLanguageId();
+			$fields[] = $dialect->escapeField('text');
+			$fieldValues[] = '?';
+			$values[] = $object->getText();
+			$dbQuery .= '('.join(', ', $fields).') VALUES ';
+			$dbQuery .= '('.join(', ', $fieldValues).')';
 
-			if (!is_null($object->getLanguageId())) {
-				$queryParts[] = '`language_id` = ?';
-				$queryParams[] = $object->getLanguageId();
-			}
+			$dbResult =
+				$this->db()->insertQuery(
+					\ewgraFramework\DatabaseInsertQuery::create()->
+					setPrimaryField('id')->
+					setQuery($dbQuery)->
+					setValues($values)
+				);
 
-			if (!is_null($object->getText())) {
-				$queryParts[] = '`text` = ?';
-				$queryParams[] = $object->getText();
-			}
-
-			$dbQuery .= join(', ', $queryParts);
-
-			$this->db()->query(
-				\ewgraFramework\DatabaseQuery::create()->
-				setQuery($dbQuery)->
-				setValues($queryParams)
-			);
-
-			$object->setId($this->db()->getInsertedId());
+			$object->setId($dbResult->getInsertedId());
 
 			$this->dropCache();
 
@@ -55,17 +54,18 @@
 		 */
 		public function save(NavigationData $object)
 		{
+			$dialect = $this->db()->getDialect();
 			$dbQuery = 'UPDATE '.$this->getTable().' SET ';
 
 			$queryParts = array();
 			$whereParts = array();
 			$queryParams = array();
 
-			$queryParts[] = '`navigation_id` = ?';
+			$queryParts[] = $dialect->escapeField('navigation_id').' = ?';
 			$queryParams[] = $object->getNavigationId();
-			$queryParts[] = '`language_id` = ?';
+			$queryParts[] = $dialect->escapeField('language_id').' = ?';
 			$queryParams[] = $object->getLanguageId();
-			$queryParts[] = '`text` = ?';
+			$queryParts[] = $dialect->escapeField('text').' = ?';
 			$queryParams[] = $object->getText();
 
 			$whereParts[] = 'id = ?';

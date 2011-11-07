@@ -36,6 +36,14 @@
 		}
 
 		/**
+		 * @return NavigationDataProto
+		 */
+		public static function proto()
+		{
+			return NavigationDataProto::me();
+		}
+
+		/**
 		 * @return AutoNavigationData
 		 */
 		public function setId($id)

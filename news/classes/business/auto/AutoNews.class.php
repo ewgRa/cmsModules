@@ -26,6 +26,14 @@
 		}
 
 		/**
+		 * @return NewsProto
+		 */
+		public static function proto()
+		{
+			return NewsProto::me();
+		}
+
+		/**
 		 * @return AutoNews
 		 */
 		public function setId($id)

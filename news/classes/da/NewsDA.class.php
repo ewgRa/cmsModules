@@ -19,27 +19,15 @@
 
 		public function getList($limit = null)
 		{
+			$dialect = $this->db()->getDialect();
+
 			return $this->getListCachedByQuery(
 				\ewgraFramework\DatabaseQuery::create()->
 				setQuery(
 					"SELECT * FROM ".$this->getTable()
-					.' ORDER BY created DESC '
-					.($limit ? $this->db()->getDialect()->getLimit($limit) : null)
+					.' ORDER BY '.$dialect->createOrder('created')->desc()->toString($dialect).' '
+					.($limit ? $dialect->getLimit($limit) : null)
 				)
-			);
-		}
-
-		/**
-		 * @return News
-		 */
-		public function getById($id)
-		{
-			$dbQuery = 'SELECT * FROM '.$this->getTable().' WHERE id=?';
-
-			return $this->getCachedByQuery(
-				\ewgraFramework\DatabaseQuery::create()->
-				setQuery($dbQuery)->
-				setValues(array($id))
 			);
 		}
 
@@ -48,7 +36,7 @@
 		 */
 		public function getByUri($uri)
 		{
-			$dbQuery = 'SELECT * FROM '.$this->getTable().' WHERE uri=?';
+			$dbQuery = 'SELECT * FROM '.$this->getTable().' WHERE upper(uri)=upper(?)';
 
 			return $this->getCachedByQuery(
 				\ewgraFramework\DatabaseQuery::create()->

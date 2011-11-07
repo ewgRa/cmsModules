@@ -9,41 +9,40 @@
 	 */
 	abstract class AutoNewsDA extends \ewgraCms\DatabaseRequester
 	{
-		protected $tableAlias = 'News';
+		protected $tableAlias = 'news';
 
 		/**
 		 * @return News
 		 */
 		public function insert(News $object)
 		{
-			$dbQuery = 'INSERT INTO '.$this->getTable().' SET ';
-			$queryParts = array();
-			$queryParams = array();
+			$dialect = $this->db()->getDialect();
 
-			if (!is_null($object->getUri())) {
-				$queryParts[] = '`uri` = ?';
-				$queryParams[] = $object->getUri();
-			}
+			$dbQuery = 'INSERT INTO '.$this->getTable().' ';
+			$fields = array();
+			$fieldValues = array();
+			$values = array();
+			$fields[] = $dialect->escapeField('uri');
+			$fieldValues[] = '?';
+			$values[] = $object->getUri();
+			$fields[] = $dialect->escapeField('created');
+			$fieldValues[] = '?';
+			$values[] = $object->getCreated();
+			$fields[] = $dialect->escapeField('modified');
+			$fieldValues[] = '?';
+			$values[] = $object->getModified();
+			$dbQuery .= '('.join(', ', $fields).') VALUES ';
+			$dbQuery .= '('.join(', ', $fieldValues).')';
 
-			if (!is_null($object->getCreated())) {
-				$queryParts[] = '`created` = ?';
-				$queryParams[] = $object->getCreated();
-			}
+			$dbResult =
+				$this->db()->insertQuery(
+					\ewgraFramework\DatabaseInsertQuery::create()->
+					setPrimaryField('id')->
+					setQuery($dbQuery)->
+					setValues($values)
+				);
 
-			if (!is_null($object->getModified())) {
-				$queryParts[] = '`modified` = ?';
-				$queryParams[] = $object->getModified();
-			}
-
-			$dbQuery .= join(', ', $queryParts);
-
-			$this->db()->query(
-				\ewgraFramework\DatabaseQuery::create()->
-				setQuery($dbQuery)->
-				setValues($queryParams)
-			);
-
-			$object->setId($this->db()->getInsertedId());
+			$object->setId($dbResult->getInsertedId());
 
 			$this->dropCache();
 
@@ -55,17 +54,18 @@
 		 */
 		public function save(News $object)
 		{
+			$dialect = $this->db()->getDialect();
 			$dbQuery = 'UPDATE '.$this->getTable().' SET ';
 
 			$queryParts = array();
 			$whereParts = array();
 			$queryParams = array();
 
-			$queryParts[] = '`uri` = ?';
+			$queryParts[] = $dialect->escapeField('uri').' = ?';
 			$queryParams[] = $object->getUri();
-			$queryParts[] = '`created` = ?';
+			$queryParts[] = $dialect->escapeField('created').' = ?';
 			$queryParams[] = $object->getCreated();
-			$queryParts[] = '`modified` = ?';
+			$queryParts[] = $dialect->escapeField('modified').' = ?';
 			$queryParams[] = $object->getModified();
 
 			$whereParts[] = 'id = ?';

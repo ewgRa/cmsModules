@@ -9,41 +9,40 @@
 	 */
 	abstract class AutoContentDataDA extends \ewgraCms\DatabaseRequester
 	{
-		protected $tableAlias = 'ContentData';
+		protected $tableAlias = 'content_data';
 
 		/**
 		 * @return ContentData
 		 */
 		public function insert(ContentData $object)
 		{
-			$dbQuery = 'INSERT INTO '.$this->getTable().' SET ';
-			$queryParts = array();
-			$queryParams = array();
+			$dialect = $this->db()->getDialect();
 
-			if (!is_null($object->getContentId())) {
-				$queryParts[] = '`content_id` = ?';
-				$queryParams[] = $object->getContentId();
-			}
+			$dbQuery = 'INSERT INTO '.$this->getTable().' ';
+			$fields = array();
+			$fieldValues = array();
+			$values = array();
+			$fields[] = $dialect->escapeField('content_id');
+			$fieldValues[] = '?';
+			$values[] = $object->getContentId();
+			$fields[] = $dialect->escapeField('language_id');
+			$fieldValues[] = '?';
+			$values[] = $object->getLanguageId();
+			$fields[] = $dialect->escapeField('text');
+			$fieldValues[] = '?';
+			$values[] = $object->getText();
+			$dbQuery .= '('.join(', ', $fields).') VALUES ';
+			$dbQuery .= '('.join(', ', $fieldValues).')';
 
-			if (!is_null($object->getLanguageId())) {
-				$queryParts[] = '`language_id` = ?';
-				$queryParams[] = $object->getLanguageId();
-			}
+			$dbResult =
+				$this->db()->insertQuery(
+					\ewgraFramework\DatabaseInsertQuery::create()->
+					setPrimaryField('id')->
+					setQuery($dbQuery)->
+					setValues($values)
+				);
 
-			if (!is_null($object->getText())) {
-				$queryParts[] = '`text` = ?';
-				$queryParams[] = $object->getText();
-			}
-
-			$dbQuery .= join(', ', $queryParts);
-
-			$this->db()->query(
-				\ewgraFramework\DatabaseQuery::create()->
-				setQuery($dbQuery)->
-				setValues($queryParams)
-			);
-
-			$object->setId($this->db()->getInsertedId());
+			$object->setId($dbResult->getInsertedId());
 
 			$this->dropCache();
 
@@ -55,17 +54,18 @@
 		 */
 		public function save(ContentData $object)
 		{
+			$dialect = $this->db()->getDialect();
 			$dbQuery = 'UPDATE '.$this->getTable().' SET ';
 
 			$queryParts = array();
 			$whereParts = array();
 			$queryParams = array();
 
-			$queryParts[] = '`content_id` = ?';
+			$queryParts[] = $dialect->escapeField('content_id').' = ?';
 			$queryParams[] = $object->getContentId();
-			$queryParts[] = '`language_id` = ?';
+			$queryParts[] = $dialect->escapeField('language_id').' = ?';
 			$queryParams[] = $object->getLanguageId();
-			$queryParts[] = '`text` = ?';
+			$queryParts[] = $dialect->escapeField('text').' = ?';
 			$queryParams[] = $object->getText();
 
 			$whereParts[] = 'id = ?';

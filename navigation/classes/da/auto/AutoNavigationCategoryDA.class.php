@@ -9,31 +9,34 @@
 	 */
 	abstract class AutoNavigationCategoryDA extends \ewgraCms\DatabaseRequester
 	{
-		protected $tableAlias = 'NavigationCategory';
+		protected $tableAlias = 'navigation_category';
 
 		/**
 		 * @return NavigationCategory
 		 */
 		public function insert(NavigationCategory $object)
 		{
-			$dbQuery = 'INSERT INTO '.$this->getTable().' SET ';
-			$queryParts = array();
-			$queryParams = array();
+			$dialect = $this->db()->getDialect();
 
-			if (!is_null($object->getAlias())) {
-				$queryParts[] = '`alias` = ?';
-				$queryParams[] = $object->getAlias();
-			}
+			$dbQuery = 'INSERT INTO '.$this->getTable().' ';
+			$fields = array();
+			$fieldValues = array();
+			$values = array();
+			$fields[] = $dialect->escapeField('alias');
+			$fieldValues[] = '?';
+			$values[] = $object->getAlias();
+			$dbQuery .= '('.join(', ', $fields).') VALUES ';
+			$dbQuery .= '('.join(', ', $fieldValues).')';
 
-			$dbQuery .= join(', ', $queryParts);
+			$dbResult =
+				$this->db()->insertQuery(
+					\ewgraFramework\DatabaseInsertQuery::create()->
+					setPrimaryField('id')->
+					setQuery($dbQuery)->
+					setValues($values)
+				);
 
-			$this->db()->query(
-				\ewgraFramework\DatabaseQuery::create()->
-				setQuery($dbQuery)->
-				setValues($queryParams)
-			);
-
-			$object->setId($this->db()->getInsertedId());
+			$object->setId($dbResult->getInsertedId());
 
 			$this->dropCache();
 
@@ -45,13 +48,14 @@
 		 */
 		public function save(NavigationCategory $object)
 		{
+			$dialect = $this->db()->getDialect();
 			$dbQuery = 'UPDATE '.$this->getTable().' SET ';
 
 			$queryParts = array();
 			$whereParts = array();
 			$queryParams = array();
 
-			$queryParts[] = '`alias` = ?';
+			$queryParts[] = $dialect->escapeField('alias').' = ?';
 			$queryParams[] = $object->getAlias();
 
 			$whereParts[] = 'id = ?';

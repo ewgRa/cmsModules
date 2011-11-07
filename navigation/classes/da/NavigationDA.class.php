@@ -19,30 +19,18 @@
 
 		public function getByCategoryIds(array $ids)
 		{
+			$dialect = $this->db()->getDialect();
+
 			$dbQuery = "
 				SELECT * FROM ".$this->getTable()."
 				WHERE category_id = ? AND status = ".NavigationStatus::NORMAL."
-				ORDER BY position ASC
+				ORDER BY ".$dialect->createOrder('position')->toString($dialect)."
 			";
 
 			return $this->getListCachedByQuery(
 				\ewgraFramework\DatabaseQuery::create()->
 				setQuery($dbQuery)->
 				setValues(array($ids))
-			);
-		}
-
-		/**
-		 * @return Navigation
-		 */
-		public function getById($id)
-		{
-			$dbQuery = 'SELECT * FROM '.$this->getTable().' WHERE id=?';
-
-			return $this->getCachedByQuery(
-				\ewgraFramework\DatabaseQuery::create()->
-				setQuery($dbQuery)->
-				setValues(array($id))
 			);
 		}
 	}

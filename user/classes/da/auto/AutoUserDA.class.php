@@ -9,48 +9,58 @@
 	 */
 	abstract class AutoUserDA extends \ewgraCms\DatabaseRequester
 	{
-		protected $tableAlias = 'User';
+		protected $tableAlias = 'user';
 
 		/**
 		 * @return User
 		 */
 		public function insert(User $object)
 		{
-			$dbQuery = 'INSERT INTO '.$this->getTable().' SET ';
-			$queryParts = array();
-			$queryParams = array();
-			$queryParts[] = '`login` = ?';
-			$queryParams[] = $object->getLogin();
-			$queryParts[] = '`password` = ?';
-			$queryParams[] = $object->getPassword();
+			$dialect = $this->db()->getDialect();
+
+			$dbQuery = 'INSERT INTO '.$this->getTable().' ';
+			$fields = array();
+			$fieldValues = array();
+			$values = array();
+			$fields[] = $dialect->escapeField('login');
+			$fieldValues[] = '?';
+			$values[] = $object->getLogin();
+			$fields[] = $dialect->escapeField('password');
+			$fieldValues[] = '?';
+			$values[] = $object->getPassword();
+			$fields[] = $dialect->escapeField('change_password_hash');
+			$fieldValues[] = '?';
 
 			if ($object->getChangePasswordHash() === null)
-				$queryParts[] = '`change_password_hash` = NULL';
+				$values[] = null;
 			else {
-				$queryParts[] = '`change_password_hash` = ?';
-				$queryParams[] = $object->getChangePasswordHash();
+				$values[] = $object->getChangePasswordHash();
 			}
 
-			$queryParts[] = '`email` = ?';
-			$queryParams[] = $object->getEmail();
+			$fields[] = $dialect->escapeField('email');
+			$fieldValues[] = '?';
+			$values[] = $object->getEmail();
+			$fields[] = $dialect->escapeField('email_confirm_hash');
+			$fieldValues[] = '?';
 
 			if ($object->getEmailConfirmHash() === null)
-				$queryParts[] = '`email_confirm_hash` = NULL';
+				$values[] = null;
 			else {
-				$queryParts[] = '`email_confirm_hash` = ?';
-				$queryParams[] = $object->getEmailConfirmHash();
+				$values[] = $object->getEmailConfirmHash();
 			}
 
+			$dbQuery .= '('.join(', ', $fields).') VALUES ';
+			$dbQuery .= '('.join(', ', $fieldValues).')';
 
-			$dbQuery .= join(', ', $queryParts);
+			$dbResult =
+				$this->db()->insertQuery(
+					\ewgraFramework\DatabaseInsertQuery::create()->
+					setPrimaryField('id')->
+					setQuery($dbQuery)->
+					setValues($values)
+				);
 
-			$this->db()->query(
-				\ewgraFramework\DatabaseQuery::create()->
-				setQuery($dbQuery)->
-				setValues($queryParams)
-			);
-
-			$object->setId($this->db()->getInsertedId());
+			$object->setId($dbResult->getInsertedId());
 
 			$this->dropCache();
 
@@ -62,31 +72,32 @@
 		 */
 		public function save(User $object)
 		{
+			$dialect = $this->db()->getDialect();
 			$dbQuery = 'UPDATE '.$this->getTable().' SET ';
 
 			$queryParts = array();
 			$whereParts = array();
 			$queryParams = array();
 
-			$queryParts[] = '`login` = ?';
+			$queryParts[] = $dialect->escapeField('login').' = ?';
 			$queryParams[] = $object->getLogin();
-			$queryParts[] = '`password` = ?';
+			$queryParts[] = $dialect->escapeField('password').' = ?';
 			$queryParams[] = $object->getPassword();
 
 			if ($object->getChangePasswordHash() === null)
-				$queryParts[] = '`change_password_hash` = NULL';
+				$queryParts[] = $dialect->escapeField('change_password_hash').' = NULL';
 			else {
-				$queryParts[] = '`change_password_hash` = ?';
+				$queryParts[] = $dialect->escapeField('change_password_hash').' = ?';
 				$queryParams[] = $object->getChangePasswordHash();
 			}
 
-			$queryParts[] = '`email` = ?';
+			$queryParts[] = $dialect->escapeField('email').' = ?';
 			$queryParams[] = $object->getEmail();
 
 			if ($object->getEmailConfirmHash() === null)
-				$queryParts[] = '`email_confirm_hash` = NULL';
+				$queryParts[] = $dialect->escapeField('email_confirm_hash').' = NULL';
 			else {
-				$queryParts[] = '`email_confirm_hash` = ?';
+				$queryParts[] = $dialect->escapeField('email_confirm_hash').' = ?';
 				$queryParams[] = $object->getEmailConfirmHash();
 			}
 

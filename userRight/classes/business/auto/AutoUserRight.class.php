@@ -34,6 +34,14 @@
 		}
 
 		/**
+		 * @return UserRightProto
+		 */
+		public static function proto()
+		{
+			return UserRightProto::me();
+		}
+
+		/**
 		 * @return AutoUserRight
 		 */
 		public function setId($id)

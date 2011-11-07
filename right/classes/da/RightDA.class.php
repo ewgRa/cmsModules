@@ -6,6 +6,8 @@
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
 	 */
+	use ewgraFramework\StringUtils;
+
 	final class RightDA extends AutoRightDA
 	{
 		/**
@@ -24,7 +26,7 @@
 		{
 			return $this->getCachedByQuery(
 				\ewgraFramework\DatabaseQuery::create()->
-				setQuery("SELECT * FROM ".$this->getTable()." WHERE alias = ?")->
+				setQuery("SELECT * FROM ".$this->getTable()." WHERE upper(alias) = upper(?)")->
 				setValues(array($alias))
 			);
 		}
@@ -34,34 +36,15 @@
 		 */
 		public function getByAliases(array $aliases)
 		{
+			$upperAliases = array();
+
+			foreach ($aliases as $alias)
+				$upperAliases[] = StringUtils::toUpper($alias);
+
 			return $this->getListCachedByQuery(
 				\ewgraFramework\DatabaseQuery::create()->
-				setQuery("SELECT * FROM ".$this->getTable()." WHERE alias IN(?)")->
-				setValues(array($aliases))
-			);
-		}
-
-		/**
-		 * @return Right
-		 */
-		public function getById($id)
-		{
-			return $this->getCachedByQuery(
-				\ewgraFramework\DatabaseQuery::create()->
-				setQuery('SELECT * FROM '.$this->getTable().' WHERE id = ?')->
-				setValues(array($id))
-			);
-		}
-
-		/**
-		 * @return Right
-		 */
-		public function getByIds(array $ids)
-		{
-			return $this->getListCachedByQuery(
-				\ewgraFramework\DatabaseQuery::create()->
-				setQuery("SELECT * FROM ".$this->getTable()." WHERE id IN (?)")->
-				setValues(array($ids))
+				setQuery("SELECT * FROM ".$this->getTable()." WHERE upper(alias) IN(?)")->
+				setValues(array($upperAliases))
 			);
 		}
 
@@ -69,7 +52,7 @@
 		{
 			$dbQuery = "
 				SELECT t1.* FROM ".$this->getTable()." t1
-				INNER JOIN ".$this->quoteTable('Right_inheritance')." t2
+				INNER JOIN ".$this->escapeTable('right_inheritance')." t2
 					ON(t2.right_id = t1.id)
 				WHERE t2.child_right_id IN (?)
 			";

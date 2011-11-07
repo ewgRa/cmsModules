@@ -9,36 +9,37 @@
 	 */
 	abstract class AutoUserRightDA extends \ewgraCms\DatabaseRequester
 	{
-		protected $tableAlias = 'UserRight';
+		protected $tableAlias = 'user_right';
 
 		/**
 		 * @return UserRight
 		 */
 		public function insert(UserRight $object)
 		{
-			$dbQuery = 'INSERT INTO '.$this->getTable().' SET ';
-			$queryParts = array();
-			$queryParams = array();
+			$dialect = $this->db()->getDialect();
 
-			if (!is_null($object->getUserId())) {
-				$queryParts[] = '`user_id` = ?';
-				$queryParams[] = $object->getUserId();
-			}
+			$dbQuery = 'INSERT INTO '.$this->getTable().' ';
+			$fields = array();
+			$fieldValues = array();
+			$values = array();
+			$fields[] = $dialect->escapeField('user_id');
+			$fieldValues[] = '?';
+			$values[] = $object->getUserId();
+			$fields[] = $dialect->escapeField('right_id');
+			$fieldValues[] = '?';
+			$values[] = $object->getRightId();
+			$dbQuery .= '('.join(', ', $fields).') VALUES ';
+			$dbQuery .= '('.join(', ', $fieldValues).')';
 
-			if (!is_null($object->getRightId())) {
-				$queryParts[] = '`right_id` = ?';
-				$queryParams[] = $object->getRightId();
-			}
+			$dbResult =
+				$this->db()->insertQuery(
+					\ewgraFramework\DatabaseInsertQuery::create()->
+					setPrimaryField('id')->
+					setQuery($dbQuery)->
+					setValues($values)
+				);
 
-			$dbQuery .= join(', ', $queryParts);
-
-			$this->db()->query(
-				\ewgraFramework\DatabaseQuery::create()->
-				setQuery($dbQuery)->
-				setValues($queryParams)
-			);
-
-			$object->setId($this->db()->getInsertedId());
+			$object->setId($dbResult->getInsertedId());
 
 			$this->dropCache();
 
@@ -50,15 +51,16 @@
 		 */
 		public function save(UserRight $object)
 		{
+			$dialect = $this->db()->getDialect();
 			$dbQuery = 'UPDATE '.$this->getTable().' SET ';
 
 			$queryParts = array();
 			$whereParts = array();
 			$queryParams = array();
 
-			$queryParts[] = '`user_id` = ?';
+			$queryParts[] = $dialect->escapeField('user_id').' = ?';
 			$queryParams[] = $object->getUserId();
-			$queryParts[] = '`right_id` = ?';
+			$queryParts[] = $dialect->escapeField('right_id').' = ?';
 			$queryParams[] = $object->getRightId();
 
 			$whereParts[] = 'id = ?';

@@ -27,7 +27,8 @@
 			foreach ($pageRights as $pageRight)
 				$rightIds[] = $pageRight->getRightId();
 
-			$this->setRequiredRights(Right::da()->getByIds($rightIds));
+			if ($rightIds)
+				$this->setRequiredRights(Right::da()->getByIds($rightIds));
 
 			$redirectPage = null;
 

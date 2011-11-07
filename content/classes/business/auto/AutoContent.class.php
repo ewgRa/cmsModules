@@ -25,6 +25,14 @@
 		}
 
 		/**
+		 * @return ContentProto
+		 */
+		public static function proto()
+		{
+			return ContentProto::me();
+		}
+
+		/**
 		 * @return AutoContent
 		 */
 		public function setId($id)

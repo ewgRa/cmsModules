@@ -24,7 +24,7 @@
 		{
 			return $this->getCachedByQuery(
 				\ewgraFramework\DatabaseQuery::create()->
-				setQuery('SELECT * FROM '.$this->getTable().' WHERE login = ?')->
+				setQuery('SELECT * FROM '.$this->getTable().' WHERE upper(login) = upper(?)')->
 				setValues(array($login))
 			);
 		}
@@ -36,7 +36,7 @@
 		{
 			return $this->getCachedByQuery(
 				\ewgraFramework\DatabaseQuery::create()->
-				setQuery('SELECT * FROM '.$this->getTable().' WHERE email = ?')->
+				setQuery('SELECT * FROM '.$this->getTable().' WHERE upper(email) = upper(?)')->
 				setValues(array($email))
 			);
 		}
@@ -57,18 +57,6 @@
 				\ewgraFramework\DatabaseQuery::create()->
 				setQuery($dbQuery)->
 				setValues(array($right->getId()))
-			);
-		}
-
-		/**
-		 * @return User
-		 */
-		public function getById($id)
-		{
-			return $this->getCachedByQuery(
-				\ewgraFramework\DatabaseQuery::create()->
-				setQuery("SELECT * FROM ".$this->getTable()." WHERE id = ?")->
-				setValues(array($id))
 			);
 		}
 	}
