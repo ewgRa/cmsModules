@@ -29,6 +29,8 @@
 
 			if ($rightIds)
 				$this->setRequiredRights(Right::da()->getByIds($rightIds));
+			else
+				$this->setRequiredRights(array());
 
 			$redirectPage = null;
 
