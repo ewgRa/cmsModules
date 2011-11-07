@@ -7,7 +7,7 @@
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
 	 */
-	abstract class AutoNavigationDataProto extends ProtoObject
+	abstract class AutoNavigationDataProto extends \ewgraFramework\ProtoObject
 	{
 		protected $dbFields = array(
 			"id" =>  "id", 

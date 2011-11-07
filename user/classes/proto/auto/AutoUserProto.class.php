@@ -7,7 +7,7 @@
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
 	 */
-	abstract class AutoUserProto extends ProtoObject
+	abstract class AutoUserProto extends \ewgraFramework\ProtoObject
 	{
 		protected $dbFields = array(
 			"id" =>  "id", 
