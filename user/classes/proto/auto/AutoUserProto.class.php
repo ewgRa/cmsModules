@@ -9,6 +9,9 @@
 	 */
 	abstract class AutoUserProto extends \ewgraFramework\ProtoObject
 	{
+		const MAX_LOGIN_LENGTH = 256;
+		const MAX_EMAIL_LENGTH = 256;
+
 		protected $dbFields = array(
 			"id" =>  "id", 
 			"login" =>  "login", 

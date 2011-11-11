@@ -9,10 +9,10 @@
 	<User>
 		<properties>
 			<id />
-			<login />
+			<login maxLength="256" />
 			<password />
 			<changePasswordHash nullable="true" />
-			<email />
+			<email maxLength="256" />
 			<emailConfirmHash nullable="true" />
 		</properties>
 	</User>
