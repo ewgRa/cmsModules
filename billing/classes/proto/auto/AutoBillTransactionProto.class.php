@@ -11,9 +11,10 @@
 	{
 		protected $dbFields = array(
 			"id" =>  "id", 
+			"created" =>  "created", 
+			"purpose" =>  "purpose", 
 			"debit" =>  "debit_id", 
 			"credit" =>  "credit_id", 
-			"created" =>  "created", 
 			"value" =>  "value"
 		);
 	}

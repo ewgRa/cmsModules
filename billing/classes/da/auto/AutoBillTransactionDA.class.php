@@ -22,15 +22,18 @@
 			$fields = array();
 			$fieldValues = array();
 			$values = array();
+			$fields[] = $dialect->escapeField('created');
+			$fieldValues[] = '?';
+			$values[] = $object->getCreated()->__toString();
+			$fields[] = $dialect->escapeField('purpose');
+			$fieldValues[] = '?';
+			$values[] = $object->getPurpose();
 			$fields[] = $dialect->escapeField('debit_id');
 			$fieldValues[] = '?';
 			$values[] = $object->getDebitId();
 			$fields[] = $dialect->escapeField('credit_id');
 			$fieldValues[] = '?';
 			$values[] = $object->getCreditId();
-			$fields[] = $dialect->escapeField('created');
-			$fieldValues[] = '?';
-			$values[] = $object->getCreated()->__toString();
 			$fields[] = $dialect->escapeField('value');
 			$fieldValues[] = '?';
 			$values[] = $object->getValue();
@@ -64,12 +67,14 @@
 			$whereParts = array();
 			$queryParams = array();
 
+			$queryParts[] = $dialect->escapeField('created').' = ?';
+			$queryParams[] = $object->getCreated()->__toString();
+			$queryParts[] = $dialect->escapeField('purpose').' = ?';
+			$queryParams[] = $object->getPurpose();
 			$queryParts[] = $dialect->escapeField('debit_id').' = ?';
 			$queryParams[] = $object->getDebitId();
 			$queryParts[] = $dialect->escapeField('credit_id').' = ?';
 			$queryParams[] = $object->getCreditId();
-			$queryParts[] = $dialect->escapeField('created').' = ?';
-			$queryParams[] = $object->getCreated()->__toString();
 			$queryParts[] = $dialect->escapeField('value').' = ?';
 			$queryParams[] = $object->getValue();
 
@@ -138,9 +143,10 @@
 			return
 				BillTransaction::create()->
 				setId($array['id'])->
+				setCreated(\ewgraFramework\DateTime::createFromString($array['created']))->
+				setPurpose($array['purpose'])->
 				setDebitId($array['debit_id'])->
 				setCreditId($array['credit_id'])->
-				setCreated(\ewgraFramework\DateTime::createFromString($array['created']))->
 				setValue($array['value']);
 		}
 	}

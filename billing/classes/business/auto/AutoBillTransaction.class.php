@@ -11,6 +11,13 @@
 	{
 		private $id = null;
 
+		/**
+		 * @var \ewgraFramework\DateTime
+		 */
+		private $created = null;
+
+		private $purpose = null;
+
 		private $debitId = null;
 
 		/**
@@ -24,11 +31,6 @@
 		 * @var Bill
 		 */
 		private $credit = null;
-
-		/**
-		 * @var \ewgraFramework\DateTime
-		 */
-		private $created = null;
 
 		private $value = null;
 
@@ -62,6 +64,39 @@
 		{
 			\ewgraFramework\Assert::isNotNull($this->id);
 			return $this->id;
+		}
+
+		/**
+		 * @return AutoBillTransaction
+		 */
+		public function setCreated(\ewgraFramework\DateTime $created)
+		{
+			$this->created = $created;
+
+			return $this;
+		}
+
+		/**
+		 * @return \ewgraFramework\DateTime
+		 */
+		public function getCreated()
+		{
+			return $this->created;
+		}
+
+		/**
+		 * @return AutoBillTransaction
+		 */
+		public function setPurpose($purpose)
+		{
+			$this->purpose = $purpose;
+
+			return $this;
+		}
+
+		public function getPurpose()
+		{
+			return $this->purpose;
 		}
 
 		/**
@@ -138,24 +173,6 @@
 				$this->credit = Bill::da()->getById($this->getCreditId());
 
 			return $this->credit;
-		}
-
-		/**
-		 * @return AutoBillTransaction
-		 */
-		public function setCreated(\ewgraFramework\DateTime $created)
-		{
-			$this->created = $created;
-
-			return $this;
-		}
-
-		/**
-		 * @return \ewgraFramework\DateTime
-		 */
-		public function getCreated()
-		{
-			return $this->created;
 		}
 
 		/**

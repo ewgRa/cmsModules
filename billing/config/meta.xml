@@ -12,6 +12,7 @@
 		<properties>
 			<id />
 			<created class="\ewgraFramework\DateTime" />
+			<alias />
 			<balance />
 		</properties>
 	</Bill>
@@ -19,9 +20,10 @@
 	<BillTransaction>
 		<properties>
 			<id />
+			<created class="\ewgraFramework\DateTime" />
+			<purpose />
 			<debit class="Bill" />
 			<credit class="Bill" />
-			<created class="\ewgraFramework\DateTime" />
 			<value />
 		</properties>
 	</BillTransaction>

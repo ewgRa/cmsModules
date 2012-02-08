@@ -12,6 +12,7 @@
 		protected $dbFields = array(
 			"id" =>  "id", 
 			"created" =>  "created", 
+			"alias" =>  "alias", 
 			"balance" =>  "balance"
 		);
 	}

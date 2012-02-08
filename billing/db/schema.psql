@@ -1,12 +1,14 @@
 CREATE TABLE bill (
-	id bigint NOT NULL PRIMARY KEY,
+	id serial PRIMARY KEY,
 	created timestamp without time zone not null default now(),
+	alias character varying(128),
 	balance numeric(10,2) not null default 0
 );
 
 CREATE TABLE bill_transaction (
-	id bigint NOT NULL PRIMARY KEY,
+	id serial PRIMARY KEY,
 	created timestamp without time zone not null default now(),
+	purpose text,
 	debit_id bigint NOT NULL REFERENCES "bill"(id) ON DELETE RESTRICT ON UPDATE RESTRICT,
 	credit_id bigint NOT NULL REFERENCES "bill"(id) ON DELETE RESTRICT ON UPDATE RESTRICT,
 	value numeric(10,2) not null

@@ -16,6 +16,8 @@
 		 */
 		private $created = null;
 
+		private $alias = null;
+
 		private $balance = null;
 
 		/**
@@ -66,6 +68,21 @@
 		public function getCreated()
 		{
 			return $this->created;
+		}
+
+		/**
+		 * @return AutoBill
+		 */
+		public function setAlias($alias)
+		{
+			$this->alias = $alias;
+
+			return $this;
+		}
+
+		public function getAlias()
+		{
+			return $this->alias;
 		}
 
 		/**

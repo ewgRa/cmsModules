@@ -25,6 +25,9 @@
 			$fields[] = $dialect->escapeField('created');
 			$fieldValues[] = '?';
 			$values[] = $object->getCreated()->__toString();
+			$fields[] = $dialect->escapeField('alias');
+			$fieldValues[] = '?';
+			$values[] = $object->getAlias();
 			$fields[] = $dialect->escapeField('balance');
 			$fieldValues[] = '?';
 			$values[] = $object->getBalance();
@@ -60,6 +63,8 @@
 
 			$queryParts[] = $dialect->escapeField('created').' = ?';
 			$queryParams[] = $object->getCreated()->__toString();
+			$queryParts[] = $dialect->escapeField('alias').' = ?';
+			$queryParams[] = $object->getAlias();
 			$queryParts[] = $dialect->escapeField('balance').' = ?';
 			$queryParams[] = $object->getBalance();
 
@@ -129,6 +134,7 @@
 				Bill::create()->
 				setId($array['id'])->
 				setCreated(\ewgraFramework\DateTime::createFromString($array['created']))->
+				setAlias($array['alias'])->
 				setBalance($array['balance']);
 		}
 
