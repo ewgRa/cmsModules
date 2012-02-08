@@ -1,14 +1,13 @@
-CREATE TABLE user_account (
+CREATE TABLE bill (
 	id bigint NOT NULL PRIMARY KEY,
-	user_id bigint NOT NULL REFERENCES "user"(id) ON DELETE RESTRICT ON UPDATE RESTRICT,
 	created timestamp without time zone not null default now(),
 	balance numeric(10,2) not null default 0
 );
 
-CREATE TABLE user_account_transaction (
+CREATE TABLE bill_transaction (
 	id bigint NOT NULL PRIMARY KEY,
-	account_id bigint NOT NULL REFERENCES "user_account"(id) ON DELETE RESTRICT ON UPDATE RESTRICT,
 	created timestamp without time zone not null default now(),
-	details text,
+	debit_id bigint NOT NULL REFERENCES "bill"(id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+	credit_id bigint NOT NULL REFERENCES "bill"(id) ON DELETE RESTRICT ON UPDATE RESTRICT,
 	value numeric(10,2) not null
 );

@@ -6,25 +6,23 @@
 	DAExtends="\ewgraCms\DatabaseRequester"
 	namespace="ewgraCmsModules"
 >
-	<User generate="false" />
 	<DateTime namespace="\ewgraFramework" type="Stringable" />
 
-	<UserAccount>
+	<Bill>
 		<properties>
 			<id />
-			<user class="User" />
 			<created class="\ewgraFramework\DateTime" />
 			<balance />
 		</properties>
-	</UserAccount>
+	</Bill>
 
-	<UserAccountTransaction>
+	<BillTransaction>
 		<properties>
 			<id />
-			<account class="UserAccount" />
+			<debit class="Bill" />
+			<credit class="Bill" />
 			<created class="\ewgraFramework\DateTime" />
-			<details />
 			<value />
 		</properties>
-	</UserAccountTransaction>
+	</BillTransaction>
 </meta>

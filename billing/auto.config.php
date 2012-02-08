@@ -8,5 +8,4 @@
 
 	\ewgraFramework\ClassesAutoloader::me()->addSearchDirectory(dirname(__FILE__), __NAMESPACE__);
 
-	User::da()->addLinkedCacher(UserAccount::da());
 ?>

@@ -7,16 +7,9 @@
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
 	 */
-	abstract class AutoUserAccount
+	abstract class AutoBill
 	{
 		private $id = null;
-
-		private $userId = null;
-
-		/**
-		 * @var User
-		 */
-		private $user = null;
 
 		/**
 		 * @var \ewgraFramework\DateTime
@@ -26,23 +19,23 @@
 		private $balance = null;
 
 		/**
-		 * @return UserAccountDA
+		 * @return BillDA
 		 */
 		public static function da()
 		{
-			return UserAccountDA::me();
+			return BillDA::me();
 		}
 
 		/**
-		 * @return UserAccountProto
+		 * @return BillProto
 		 */
 		public static function proto()
 		{
-			return UserAccountProto::me();
+			return BillProto::me();
 		}
 
 		/**
-		 * @return AutoUserAccount
+		 * @return AutoBill
 		 */
 		public function setId($id)
 		{
@@ -58,45 +51,7 @@
 		}
 
 		/**
-		 * @return AutoUserAccount
-		 */
-		public function setUserId($userId)
-		{
-			$this->user = null;
-			$this->userId = $userId;
-
-			return $this;
-		}
-
-		public function getUserId()
-		{
-			return $this->userId;
-		}
-
-		/**
-		 * @return AutoUserAccount
-		 */
-		public function setUser(User $user)
-		{
-			$this->userId = $user->getId();
-			$this->user = $user;
-
-			return $this;
-		}
-
-		/**
-		 * @return User
-		 */
-		public function getUser()
-		{
-			if (!$this->user && $this->getUserId())
-				$this->user = User::da()->getById($this->getUserId());
-
-			return $this->user;
-		}
-
-		/**
-		 * @return AutoUserAccount
+		 * @return AutoBill
 		 */
 		public function setCreated(\ewgraFramework\DateTime $created)
 		{
@@ -114,7 +69,7 @@
 		}
 
 		/**
-		 * @return AutoUserAccount
+		 * @return AutoBill
 		 */
 		public function setBalance($balance)
 		{

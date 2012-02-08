@@ -7,13 +7,12 @@
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
 	 */
-	abstract class AutoUserAccountTransactionProto extends \ewgraFramework\ProtoObject
+	abstract class AutoBillProto extends \ewgraFramework\ProtoObject
 	{
 		protected $dbFields = array(
 			"id" =>  "id", 
-			"account" =>  "account_id", 
 			"created" =>  "created", 
-			"value" =>  "value"
+			"balance" =>  "balance"
 		);
 	}
 ?>

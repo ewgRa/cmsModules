@@ -7,14 +7,14 @@
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
 	 */
-	abstract class AutoUserAccountTransactionDA extends \ewgraCms\DatabaseRequester
+	abstract class AutoBillTransactionDA extends \ewgraCms\DatabaseRequester
 	{
-		protected $tableAlias = 'user_account_transaction';
+		protected $tableAlias = 'bill_transaction';
 
 		/**
-		 * @return UserAccountTransaction
+		 * @return BillTransaction
 		 */
-		public function insert(UserAccountTransaction $object)
+		public function insert(BillTransaction $object)
 		{
 			$dialect = $this->db()->getDialect();
 
@@ -22,9 +22,12 @@
 			$fields = array();
 			$fieldValues = array();
 			$values = array();
-			$fields[] = $dialect->escapeField('account_id');
+			$fields[] = $dialect->escapeField('debit_id');
 			$fieldValues[] = '?';
-			$values[] = $object->getAccountId();
+			$values[] = $object->getDebitId();
+			$fields[] = $dialect->escapeField('credit_id');
+			$fieldValues[] = '?';
+			$values[] = $object->getCreditId();
 			$fields[] = $dialect->escapeField('created');
 			$fieldValues[] = '?';
 			$values[] = $object->getCreated()->__toString();
@@ -50,9 +53,9 @@
 		}
 
 		/**
-		 * @return AutoUserAccountTransactionDA
+		 * @return AutoBillTransactionDA
 		 */
-		public function save(UserAccountTransaction $object)
+		public function save(BillTransaction $object)
 		{
 			$dialect = $this->db()->getDialect();
 			$dbQuery = 'UPDATE '.$this->getTable().' SET ';
@@ -61,8 +64,10 @@
 			$whereParts = array();
 			$queryParams = array();
 
-			$queryParts[] = $dialect->escapeField('account_id').' = ?';
-			$queryParams[] = $object->getAccountId();
+			$queryParts[] = $dialect->escapeField('debit_id').' = ?';
+			$queryParams[] = $object->getDebitId();
+			$queryParts[] = $dialect->escapeField('credit_id').' = ?';
+			$queryParams[] = $object->getCreditId();
 			$queryParts[] = $dialect->escapeField('created').' = ?';
 			$queryParams[] = $object->getCreated()->__toString();
 			$queryParts[] = $dialect->escapeField('value').' = ?';
@@ -86,9 +91,9 @@
 		}
 
 		/**
-		 * @return AutoUserAccountTransactionDA
+		 * @return AutoBillTransactionDA
 		 */
-		public function delete(UserAccountTransaction $object)
+		public function delete(BillTransaction $object)
 		{
 			$dbQuery =
 				'DELETE FROM '.$this->getTable().' WHERE id = '.$object->getId();
@@ -126,14 +131,15 @@
 		}
 
 		/**
-		 * @return UserAccountTransaction
+		 * @return BillTransaction
 		 */
 		public function build(array $array)
 		{
 			return
-				UserAccountTransaction::create()->
+				BillTransaction::create()->
 				setId($array['id'])->
-				setAccountId($array['account_id'])->
+				setDebitId($array['debit_id'])->
+				setCreditId($array['credit_id'])->
 				setCreated(\ewgraFramework\DateTime::createFromString($array['created']))->
 				setValue($array['value']);
 		}

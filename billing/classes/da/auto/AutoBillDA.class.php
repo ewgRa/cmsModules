@@ -7,14 +7,14 @@
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
 	 */
-	abstract class AutoUserAccountDA extends \ewgraCms\DatabaseRequester
+	abstract class AutoBillDA extends \ewgraCms\DatabaseRequester
 	{
-		protected $tableAlias = 'user_account';
+		protected $tableAlias = 'bill';
 
 		/**
-		 * @return UserAccount
+		 * @return Bill
 		 */
-		public function insert(UserAccount $object)
+		public function insert(Bill $object)
 		{
 			$dialect = $this->db()->getDialect();
 
@@ -22,9 +22,6 @@
 			$fields = array();
 			$fieldValues = array();
 			$values = array();
-			$fields[] = $dialect->escapeField('user_id');
-			$fieldValues[] = '?';
-			$values[] = $object->getUserId();
 			$fields[] = $dialect->escapeField('created');
 			$fieldValues[] = '?';
 			$values[] = $object->getCreated()->__toString();
@@ -50,9 +47,9 @@
 		}
 
 		/**
-		 * @return AutoUserAccountDA
+		 * @return AutoBillDA
 		 */
-		public function save(UserAccount $object)
+		public function save(Bill $object)
 		{
 			$dialect = $this->db()->getDialect();
 			$dbQuery = 'UPDATE '.$this->getTable().' SET ';
@@ -61,8 +58,6 @@
 			$whereParts = array();
 			$queryParams = array();
 
-			$queryParts[] = $dialect->escapeField('user_id').' = ?';
-			$queryParams[] = $object->getUserId();
 			$queryParts[] = $dialect->escapeField('created').' = ?';
 			$queryParams[] = $object->getCreated()->__toString();
 			$queryParts[] = $dialect->escapeField('balance').' = ?';
@@ -86,9 +81,9 @@
 		}
 
 		/**
-		 * @return AutoUserAccountDA
+		 * @return AutoBillDA
 		 */
-		public function delete(UserAccount $object)
+		public function delete(Bill $object)
 		{
 			$dbQuery =
 				'DELETE FROM '.$this->getTable().' WHERE id = '.$object->getId();
@@ -126,21 +121,20 @@
 		}
 
 		/**
-		 * @return UserAccount
+		 * @return Bill
 		 */
 		public function build(array $array)
 		{
 			return
-				UserAccount::create()->
+				Bill::create()->
 				setId($array['id'])->
-				setUserId($array['user_id'])->
 				setCreated(\ewgraFramework\DateTime::createFromString($array['created']))->
 				setBalance($array['balance']);
 		}
 
 		public function dropCache()
 		{
-			UserAccountTransaction::da()->dropCache();
+			BillTransaction::da()->dropCache();
 			return parent::dropCache();
 		}
 	}

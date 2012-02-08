@@ -6,15 +6,14 @@
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
 	 */
-	final class UserAccountTransactionDA extends AutoUserAccountTransactionDA
+	final class Bill extends AutoBill
 	{
 		/**
-		 * @return UserAccountTransactionDA
-		 * method needed for methods hinting
+		 * @return Bill
 		 */
-		public static function me()
+		public static function create()
 		{
-			return parent::me();
+			return new self;
 		}
 	}
 ?>
