@@ -16,5 +16,14 @@
 		{
 			return parent::me();
 		}
+
+		public function getByAlias($alias)
+		{
+			return $this->getCachedByQuery(
+				\ewgraFramework\DatabaseQuery::create()->
+				setQuery('SELECT * FROM '.$this->getTable().' WHERE upper(alias) = upper(?)')->
+				setValues(array($alias))
+			);
+		}
 	}
 ?>

@@ -15,5 +15,20 @@
 		{
 			return new self;
 		}
+
+		// FIXME XXX: transaction
+		public function execute()
+		{
+			$debit = $this->getDebit();
+			$credit = $this->getCredit();
+
+			$debit->reduceBalance($this->getValue());
+			$credit->addBalance($this->getValue());
+
+			$debit->da()->save($debit);
+			$credit->da()->save($credit);
+
+			return $this;
+		}
 	}
 ?>

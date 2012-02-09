@@ -15,5 +15,17 @@
 		{
 			return new self;
 		}
+
+		public function reduceBalance($value)
+		{
+			$this->setBalance($this->getBalance()-$value);
+			return $this;
+		}
+
+		public function addBalance($value)
+		{
+			$this->setBalance($this->getBalance()+$value);
+			return $this;
+		}
 	}
 ?>
