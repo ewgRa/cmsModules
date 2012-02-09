@@ -16,6 +16,12 @@
 			return new self;
 		}
 
+		public function addValue($value)
+		{
+			$this->setValue($this->getValue()+$value);
+			return $this;
+		}
+
 		// FIXME XXX: transaction
 		public function execute()
 		{
