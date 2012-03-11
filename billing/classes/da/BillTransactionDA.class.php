@@ -16,5 +16,33 @@
 		{
 			return parent::me();
 		}
+
+		public function getListByBill(Bill $bill, \ewgraFramework\Pager $pager)
+		{
+			$dialect = $this->db()->getDialect();
+
+			return $this->getListCachedByQuery(
+				\ewgraFramework\DatabaseQuery::create()->
+				setQuery('
+					SELECT * FROM '.$this->getTable().' WHERE credit_id=? OR debit_id=?
+					'.$dialect->getLimitByPager($pager).'
+				')->
+				setValues(array($bill->getId(), $bill->getId()))
+			);
+		}
+
+		public function getCountByBill(Bill $bill)
+		{
+			$arr = $this->getCustomCachedByQuery(
+				\ewgraFramework\DatabaseQuery::create()->
+				setQuery('
+					SELECT count(*) as cnt FROM '.$this->getTable().'
+					WHERE credit_id=? OR debit_id=?
+				')->
+				setValues(array($bill->getId(), $bill->getId()))
+			);
+
+			return $arr['cnt'];
+		}
 	}
 ?>
