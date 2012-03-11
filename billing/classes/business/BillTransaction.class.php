@@ -6,7 +6,7 @@
 	 * @license http://www.opensource.org/licenses/bsd-license.php BSD
 	 * @author Evgeniy Sokolov <ewgraf@gmail.com>
 	 */
-	final class BillTransaction extends AutoBillTransaction
+	final class BillTransaction extends AutoBillTransaction implements \ewgraFramework\ArrayableInterface
 	{
 		/**
 		 * @return BillTransaction
@@ -35,6 +35,15 @@
 			$credit->da()->save($credit);
 
 			return $this;
+		}
+
+		public function toArray()
+		{
+			return array(
+				'id' => $this->getId(),
+				'value' => $this->getValue(),
+				'purpose' => $this->getPurpose()
+			);
 		}
 	}
 ?>
