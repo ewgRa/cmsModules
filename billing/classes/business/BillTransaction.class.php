@@ -41,6 +41,7 @@
 		{
 			return array(
 				'id' => $this->getId(),
+				'created' => $this->getCreated()->format('Y-m-d H:i:s'),
 				'value' => $this->getValue(),
 				'purpose' => $this->getPurpose()
 			);

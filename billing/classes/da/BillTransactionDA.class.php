@@ -25,6 +25,7 @@
 				\ewgraFramework\DatabaseQuery::create()->
 				setQuery('
 					SELECT * FROM '.$this->getTable().' WHERE credit_id=? OR debit_id=?
+					ORDER BY created DESC
 					'.$dialect->getLimitByPager($pager).'
 				')->
 				setValues(array($bill->getId(), $bill->getId()))
