@@ -54,6 +54,7 @@
 		/**
 		 * @return \ewgraFramework\ModelAndView
 		 * FIXME: separate layout and viewfile inheritances, layout view files has priority
+		 * FIXME: reverse $viewFiles ? child files need load first
 		 */
 		public function handleRequest(
 			\ewgraFramework\HttpRequest $request,
