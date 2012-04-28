@@ -37,5 +37,17 @@
 				setValues(array($user->getId()))
 			);
 		}
+
+		public function getByUserRight(User $user, Right $right)
+		{
+			$query = "SELECT * FROM ".$this->getTable()." WHERE user_id = ? AND right_id = ?";
+			$values = array($user->getId(), $right->getId());
+
+			return $this->getCachedByQuery(
+				\ewgraFramework\DatabaseQuery::create()->
+				setQuery($query)->
+				setValues($values)
+			);
+		}
 	}
 ?>
