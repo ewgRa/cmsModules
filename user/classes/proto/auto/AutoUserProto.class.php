@@ -16,9 +16,12 @@
 			"id" =>  "id", 
 			"login" =>  "login", 
 			"password" =>  "password", 
+			"passwordSalt" =>  "password_salt", 
 			"changePasswordHash" =>  "change_password_hash", 
+			"changePasswordSalt" =>  "change_password_salt", 
 			"email" =>  "email", 
-			"emailConfirmHash" =>  "email_confirm_hash"
+			"emailConfirmHash" =>  "email_confirm_hash", 
+			"emailConfirmSalt" =>  "email_confirm_salt"
 		);
 	}
 ?>

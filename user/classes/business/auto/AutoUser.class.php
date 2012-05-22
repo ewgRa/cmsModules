@@ -15,11 +15,17 @@
 
 		private $password = null;
 
+		private $passwordSalt = null;
+
 		private $changePasswordHash = null;
+
+		private $changePasswordSalt = null;
 
 		private $email = null;
 
 		private $emailConfirmHash = null;
+
+		private $emailConfirmSalt = null;
 
 		/**
 		 * @return UserDA
@@ -51,6 +57,11 @@
 		{
 			\ewgraFramework\Assert::isNotNull($this->id);
 			return $this->id;
+		}
+
+		public function hasId()
+		{
+			return ($this->id !== null);
 		}
 
 		/**
@@ -86,6 +97,21 @@
 		/**
 		 * @return AutoUser
 		 */
+		public function setPasswordSalt($passwordSalt)
+		{
+			$this->passwordSalt = $passwordSalt;
+
+			return $this;
+		}
+
+		public function getPasswordSalt()
+		{
+			return $this->passwordSalt;
+		}
+
+		/**
+		 * @return AutoUser
+		 */
 		public function setChangePasswordHash($changePasswordHash = null)
 		{
 			$this->changePasswordHash = $changePasswordHash;
@@ -96,6 +122,21 @@
 		public function getChangePasswordHash()
 		{
 			return $this->changePasswordHash;
+		}
+
+		/**
+		 * @return AutoUser
+		 */
+		public function setChangePasswordSalt($changePasswordSalt = null)
+		{
+			$this->changePasswordSalt = $changePasswordSalt;
+
+			return $this;
+		}
+
+		public function getChangePasswordSalt()
+		{
+			return $this->changePasswordSalt;
 		}
 
 		/**
@@ -126,6 +167,21 @@
 		public function getEmailConfirmHash()
 		{
 			return $this->emailConfirmHash;
+		}
+
+		/**
+		 * @return AutoUser
+		 */
+		public function setEmailConfirmSalt($emailConfirmSalt = null)
+		{
+			$this->emailConfirmSalt = $emailConfirmSalt;
+
+			return $this;
+		}
+
+		public function getEmailConfirmSalt()
+		{
+			return $this->emailConfirmSalt;
 		}
 	}
 ?>

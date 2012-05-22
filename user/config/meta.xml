@@ -11,9 +11,12 @@
 			<id />
 			<login maxLength="256" />
 			<password />
+			<passwordSalt />
 			<changePasswordHash nullable="true" />
+			<changePasswordSalt nullable="true" />
 			<email maxLength="256" />
 			<emailConfirmHash nullable="true" />
+			<emailConfirmSalt nullable="true" />
 		</properties>
 	</User>
 </meta>

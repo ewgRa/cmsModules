@@ -26,9 +26,19 @@
 			parent::__construct($controller);
 		}
 
-		public static function getPasswordHash($password)
+		public static function getPasswordHash($password, $salt)
 		{
-			return md5(USER_PASSWORD_SALT.$password);
+			return md5($salt.$password);
+		}
+
+		public static function getSha1PasswordHash($password, $salt)
+		{
+			return sha1($salt.$password);
+		}
+
+		public static function generateSalt()
+		{
+			return md5(microtime(true).rand(0, 100000));
 		}
 
 		protected function logout(
@@ -67,7 +77,11 @@
 
 				if (
 					$user
-					&& $user->getPassword() != $this->getPasswordHash($form->getValue('password'))
+					&& $user->getPassword() !=
+						$this->getPasswordHash(
+							$form->getValue('password'),
+							$user->getPasswordSalt()
+						)
 				)
 					$loginResult = self::WRONG_PASSWORD;
 

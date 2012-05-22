@@ -16,18 +16,38 @@
 		 */
 		public function insert(User $object)
 		{
+			$result = $this->rawInsert($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return User
+		 */
+		public function rawInsert(User $object)
+		{
 			$dialect = $this->db()->getDialect();
 
 			$dbQuery = 'INSERT INTO '.$this->getTable().' ';
 			$fields = array();
 			$fieldValues = array();
 			$values = array();
+
+			if ($object->hasId()) {
+				$fields[] = $dialect->escapeField('id');
+				$fieldValues[] = '?';
+				$values[] = $object->getId();
+			}
+
 			$fields[] = $dialect->escapeField('login');
 			$fieldValues[] = '?';
 			$values[] = $object->getLogin();
 			$fields[] = $dialect->escapeField('password');
 			$fieldValues[] = '?';
 			$values[] = $object->getPassword();
+			$fields[] = $dialect->escapeField('password_salt');
+			$fieldValues[] = '?';
+			$values[] = $object->getPasswordSalt();
 			$fields[] = $dialect->escapeField('change_password_hash');
 			$fieldValues[] = '?';
 
@@ -35,6 +55,15 @@
 				$values[] = null;
 			else {
 				$values[] = $object->getChangePasswordHash();
+			}
+
+			$fields[] = $dialect->escapeField('change_password_salt');
+			$fieldValues[] = '?';
+
+			if ($object->getChangePasswordSalt() === null)
+				$values[] = null;
+			else {
+				$values[] = $object->getChangePasswordSalt();
 			}
 
 			$fields[] = $dialect->escapeField('email');
@@ -49,6 +78,15 @@
 				$values[] = $object->getEmailConfirmHash();
 			}
 
+			$fields[] = $dialect->escapeField('email_confirm_salt');
+			$fieldValues[] = '?';
+
+			if ($object->getEmailConfirmSalt() === null)
+				$values[] = null;
+			else {
+				$values[] = $object->getEmailConfirmSalt();
+			}
+
 			$dbQuery .= '('.join(', ', $fields).') VALUES ';
 			$dbQuery .= '('.join(', ', $fieldValues).')';
 
@@ -60,9 +98,8 @@
 					setValues($values)
 				);
 
-			$object->setId($dbResult->getInsertedId());
-
-			$this->dropCache();
+			if (!$object->hasId())
+				$object->setId($dbResult->getInsertedId());
 
 			return $object;
 		}
@@ -71,6 +108,16 @@
 		 * @return AutoUserDA
 		 */
 		public function save(User $object)
+		{
+			$result = $this->rawSave($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return AutoUserDA
+		 */
+		public function rawSave(User $object)
 		{
 			$dialect = $this->db()->getDialect();
 			$dbQuery = 'UPDATE '.$this->getTable().' SET ';
@@ -83,12 +130,22 @@
 			$queryParams[] = $object->getLogin();
 			$queryParts[] = $dialect->escapeField('password').' = ?';
 			$queryParams[] = $object->getPassword();
+			$queryParts[] = $dialect->escapeField('password_salt').' = ?';
+			$queryParams[] = $object->getPasswordSalt();
 
 			if ($object->getChangePasswordHash() === null)
 				$queryParts[] = $dialect->escapeField('change_password_hash').' = NULL';
 			else {
 				$queryParts[] = $dialect->escapeField('change_password_hash').' = ?';
 				$queryParams[] = $object->getChangePasswordHash();
+			}
+
+
+			if ($object->getChangePasswordSalt() === null)
+				$queryParts[] = $dialect->escapeField('change_password_salt').' = NULL';
+			else {
+				$queryParts[] = $dialect->escapeField('change_password_salt').' = ?';
+				$queryParams[] = $object->getChangePasswordSalt();
 			}
 
 			$queryParts[] = $dialect->escapeField('email').' = ?';
@@ -99,6 +156,14 @@
 			else {
 				$queryParts[] = $dialect->escapeField('email_confirm_hash').' = ?';
 				$queryParams[] = $object->getEmailConfirmHash();
+			}
+
+
+			if ($object->getEmailConfirmSalt() === null)
+				$queryParts[] = $dialect->escapeField('email_confirm_salt').' = NULL';
+			else {
+				$queryParts[] = $dialect->escapeField('email_confirm_salt').' = ?';
+				$queryParams[] = $object->getEmailConfirmSalt();
 			}
 
 
@@ -114,8 +179,6 @@
 				setValues($queryParams)
 			);
 
-			$this->dropCache();
-
 			return $object;
 		}
 
@@ -123,6 +186,16 @@
 		 * @return AutoUserDA
 		 */
 		public function delete(User $object)
+		{
+			$result = $this->rawDelete($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return AutoUserDA
+		 */
+		public function rawDelete(User $object)
 		{
 			$dbQuery =
 				'DELETE FROM '.$this->getTable().' WHERE id = '.$object->getId();
@@ -132,8 +205,6 @@
 			);
 
 			$object->setId(null);
-
-			$this->dropCache();
 
 			return $this;
 		}
@@ -169,9 +240,12 @@
 				setId($array['id'])->
 				setLogin($array['login'])->
 				setPassword($array['password'])->
+				setPasswordSalt($array['password_salt'])->
 				setChangePasswordHash($array['change_password_hash'])->
+				setChangePasswordSalt($array['change_password_salt'])->
 				setEmail($array['email'])->
-				setEmailConfirmHash($array['email_confirm_hash']);
+				setEmailConfirmHash($array['email_confirm_hash'])->
+				setEmailConfirmSalt($array['email_confirm_salt']);
 		}
 	}
 ?>
