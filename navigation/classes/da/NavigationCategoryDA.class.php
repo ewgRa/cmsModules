@@ -24,7 +24,7 @@
 		{
 			return $this->getCachedByQuery(
 				\ewgraFramework\DatabaseQuery::create()->
-				setQuery('SELECT * FROM '.$this->getTable().' WHERE uper(alias) = upper(?)')->
+				setQuery('SELECT * FROM '.$this->getTable().' WHERE upper(alias) = upper(?)')->
 				setValues(array($alias))
 			);
 		}
