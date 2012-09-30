@@ -11,10 +11,33 @@
 	{
 		protected $tableAlias = 'navigation';
 
+		public function getTag()
+		{
+			return '\ewgraCmsModules\Navigation';
+		}
+
+		/**
+		 * @return array
+		 */
+		public function getTagList()
+		{
+			return array($this->getTag(), '\ewgraCmsModules\NavigationCategory');
+		}
+
 		/**
 		 * @return Navigation
 		 */
 		public function insert(Navigation $object)
+		{
+			$result = $this->rawInsert($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return Navigation
+		 */
+		public function rawInsert(Navigation $object)
 		{
 			$dialect = $this->db()->getDialect();
 
@@ -22,6 +45,13 @@
 			$fields = array();
 			$fieldValues = array();
 			$values = array();
+
+			if ($object->hasId()) {
+				$fields[] = $dialect->escapeField('id');
+				$fieldValues[] = '?';
+				$values[] = $object->getId();
+			}
+
 			$fields[] = $dialect->escapeField('category_id');
 			$fieldValues[] = '?';
 			$values[] = $object->getCategoryId();
@@ -45,9 +75,8 @@
 					setValues($values)
 				);
 
-			$object->setId($dbResult->getInsertedId());
-
-			$this->dropCache();
+			if (!$object->hasId())
+				$object->setId($dbResult->getInsertedId());
 
 			return $object;
 		}
@@ -56,6 +85,16 @@
 		 * @return AutoNavigationDA
 		 */
 		public function save(Navigation $object)
+		{
+			$result = $this->rawSave($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return AutoNavigationDA
+		 */
+		public function rawSave(Navigation $object)
 		{
 			$dialect = $this->db()->getDialect();
 			$dbQuery = 'UPDATE '.$this->getTable().' SET ';
@@ -85,8 +124,6 @@
 				setValues($queryParams)
 			);
 
-			$this->dropCache();
-
 			return $object;
 		}
 
@@ -94,6 +131,16 @@
 		 * @return AutoNavigationDA
 		 */
 		public function delete(Navigation $object)
+		{
+			$result = $this->rawDelete($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return AutoNavigationDA
+		 */
+		public function rawDelete(Navigation $object)
 		{
 			$dbQuery =
 				'DELETE FROM '.$this->getTable().' WHERE id = '.$object->getId();
@@ -103,8 +150,6 @@
 			);
 
 			$object->setId(null);
-
-			$this->dropCache();
 
 			return $this;
 		}
@@ -142,12 +187,6 @@
 				setUri(\ewgraFramework\HttpUrl::createFromString($array['uri']))->
 				setPosition($array['position'])->
 				setStatus(NavigationStatus::create($array['status']));
-		}
-
-		public function dropCache()
-		{
-			NavigationData::da()->dropCache();
-			return parent::dropCache();
 		}
 	}
 ?>

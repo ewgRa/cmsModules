@@ -11,10 +11,33 @@
 	{
 		protected $tableAlias = 'navigation_data';
 
+		public function getTag()
+		{
+			return '\ewgraCmsModules\NavigationData';
+		}
+
+		/**
+		 * @return array
+		 */
+		public function getTagList()
+		{
+			return array($this->getTag(), '\ewgraCmsModules\Navigation', '\ewgraCms\Language');
+		}
+
 		/**
 		 * @return NavigationData
 		 */
 		public function insert(NavigationData $object)
+		{
+			$result = $this->rawInsert($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return NavigationData
+		 */
+		public function rawInsert(NavigationData $object)
 		{
 			$dialect = $this->db()->getDialect();
 
@@ -22,6 +45,13 @@
 			$fields = array();
 			$fieldValues = array();
 			$values = array();
+
+			if ($object->hasId()) {
+				$fields[] = $dialect->escapeField('id');
+				$fieldValues[] = '?';
+				$values[] = $object->getId();
+			}
+
 			$fields[] = $dialect->escapeField('navigation_id');
 			$fieldValues[] = '?';
 			$values[] = $object->getNavigationId();
@@ -42,9 +72,8 @@
 					setValues($values)
 				);
 
-			$object->setId($dbResult->getInsertedId());
-
-			$this->dropCache();
+			if (!$object->hasId())
+				$object->setId($dbResult->getInsertedId());
 
 			return $object;
 		}
@@ -53,6 +82,16 @@
 		 * @return AutoNavigationDataDA
 		 */
 		public function save(NavigationData $object)
+		{
+			$result = $this->rawSave($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return AutoNavigationDataDA
+		 */
+		public function rawSave(NavigationData $object)
 		{
 			$dialect = $this->db()->getDialect();
 			$dbQuery = 'UPDATE '.$this->getTable().' SET ';
@@ -80,8 +119,6 @@
 				setValues($queryParams)
 			);
 
-			$this->dropCache();
-
 			return $object;
 		}
 
@@ -89,6 +126,16 @@
 		 * @return AutoNavigationDataDA
 		 */
 		public function delete(NavigationData $object)
+		{
+			$result = $this->rawDelete($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return AutoNavigationDataDA
+		 */
+		public function rawDelete(NavigationData $object)
 		{
 			$dbQuery =
 				'DELETE FROM '.$this->getTable().' WHERE id = '.$object->getId();
@@ -98,8 +145,6 @@
 			);
 
 			$object->setId(null);
-
-			$this->dropCache();
 
 			return $this;
 		}

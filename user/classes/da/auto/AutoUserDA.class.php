@@ -11,6 +11,19 @@
 	{
 		protected $tableAlias = 'user';
 
+		public function getTag()
+		{
+			return '\ewgraCmsModules\User';
+		}
+
+		/**
+		 * @return array
+		 */
+		public function getTagList()
+		{
+			return array($this->getTag());
+		}
+
 		/**
 		 * @return User
 		 */

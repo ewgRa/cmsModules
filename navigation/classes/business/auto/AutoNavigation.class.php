@@ -62,6 +62,11 @@
 			return $this->id;
 		}
 
+		public function hasId()
+		{
+			return ($this->id !== null);
+		}
+
 		/**
 		 * @return AutoNavigation
 		 */

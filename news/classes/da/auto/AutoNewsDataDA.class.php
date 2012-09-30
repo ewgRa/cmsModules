@@ -11,10 +11,33 @@
 	{
 		protected $tableAlias = 'news_data';
 
+		public function getTag()
+		{
+			return '\ewgraCmsModules\NewsData';
+		}
+
+		/**
+		 * @return array
+		 */
+		public function getTagList()
+		{
+			return array($this->getTag(), '\ewgraCmsModules\News', '\ewgraCms\Language');
+		}
+
 		/**
 		 * @return NewsData
 		 */
 		public function insert(NewsData $object)
+		{
+			$result = $this->rawInsert($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return NewsData
+		 */
+		public function rawInsert(NewsData $object)
 		{
 			$dialect = $this->db()->getDialect();
 
@@ -22,6 +45,13 @@
 			$fields = array();
 			$fieldValues = array();
 			$values = array();
+
+			if ($object->hasId()) {
+				$fields[] = $dialect->escapeField('id');
+				$fieldValues[] = '?';
+				$values[] = $object->getId();
+			}
+
 			$fields[] = $dialect->escapeField('news_id');
 			$fieldValues[] = '?';
 			$values[] = $object->getNewsId();
@@ -48,9 +78,8 @@
 					setValues($values)
 				);
 
-			$object->setId($dbResult->getInsertedId());
-
-			$this->dropCache();
+			if (!$object->hasId())
+				$object->setId($dbResult->getInsertedId());
 
 			return $object;
 		}
@@ -59,6 +88,16 @@
 		 * @return AutoNewsDataDA
 		 */
 		public function save(NewsData $object)
+		{
+			$result = $this->rawSave($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return AutoNewsDataDA
+		 */
+		public function rawSave(NewsData $object)
 		{
 			$dialect = $this->db()->getDialect();
 			$dbQuery = 'UPDATE '.$this->getTable().' SET ';
@@ -90,8 +129,6 @@
 				setValues($queryParams)
 			);
 
-			$this->dropCache();
-
 			return $object;
 		}
 
@@ -99,6 +136,16 @@
 		 * @return AutoNewsDataDA
 		 */
 		public function delete(NewsData $object)
+		{
+			$result = $this->rawDelete($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return AutoNewsDataDA
+		 */
+		public function rawDelete(NewsData $object)
 		{
 			$dbQuery =
 				'DELETE FROM '.$this->getTable().' WHERE id = '.$object->getId();
@@ -108,8 +155,6 @@
 			);
 
 			$object->setId(null);
-
-			$this->dropCache();
 
 			return $this;
 		}

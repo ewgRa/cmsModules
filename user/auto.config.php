@@ -7,5 +7,4 @@
 	*/
 
 	\ewgraFramework\ClassesAutoloader::me()->addSearchDirectory(dirname(__FILE__), __NAMESPACE__);
-
 ?>

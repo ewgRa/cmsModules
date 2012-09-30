@@ -11,10 +11,33 @@
 	{
 		protected $tableAlias = 'navigation_category';
 
+		public function getTag()
+		{
+			return '\ewgraCmsModules\NavigationCategory';
+		}
+
+		/**
+		 * @return array
+		 */
+		public function getTagList()
+		{
+			return array($this->getTag());
+		}
+
 		/**
 		 * @return NavigationCategory
 		 */
 		public function insert(NavigationCategory $object)
+		{
+			$result = $this->rawInsert($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return NavigationCategory
+		 */
+		public function rawInsert(NavigationCategory $object)
 		{
 			$dialect = $this->db()->getDialect();
 
@@ -22,6 +45,13 @@
 			$fields = array();
 			$fieldValues = array();
 			$values = array();
+
+			if ($object->hasId()) {
+				$fields[] = $dialect->escapeField('id');
+				$fieldValues[] = '?';
+				$values[] = $object->getId();
+			}
+
 			$fields[] = $dialect->escapeField('alias');
 			$fieldValues[] = '?';
 			$values[] = $object->getAlias();
@@ -36,9 +66,8 @@
 					setValues($values)
 				);
 
-			$object->setId($dbResult->getInsertedId());
-
-			$this->dropCache();
+			if (!$object->hasId())
+				$object->setId($dbResult->getInsertedId());
 
 			return $object;
 		}
@@ -47,6 +76,16 @@
 		 * @return AutoNavigationCategoryDA
 		 */
 		public function save(NavigationCategory $object)
+		{
+			$result = $this->rawSave($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return AutoNavigationCategoryDA
+		 */
+		public function rawSave(NavigationCategory $object)
 		{
 			$dialect = $this->db()->getDialect();
 			$dbQuery = 'UPDATE '.$this->getTable().' SET ';
@@ -70,8 +109,6 @@
 				setValues($queryParams)
 			);
 
-			$this->dropCache();
-
 			return $object;
 		}
 
@@ -79,6 +116,16 @@
 		 * @return AutoNavigationCategoryDA
 		 */
 		public function delete(NavigationCategory $object)
+		{
+			$result = $this->rawDelete($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return AutoNavigationCategoryDA
+		 */
+		public function rawDelete(NavigationCategory $object)
 		{
 			$dbQuery =
 				'DELETE FROM '.$this->getTable().' WHERE id = '.$object->getId();
@@ -88,8 +135,6 @@
 			);
 
 			$object->setId(null);
-
-			$this->dropCache();
 
 			return $this;
 		}
@@ -124,12 +169,6 @@
 				NavigationCategory::create()->
 				setId($array['id'])->
 				setAlias($array['alias']);
-		}
-
-		public function dropCache()
-		{
-			Navigation::da()->dropCache();
-			return parent::dropCache();
 		}
 	}
 ?>

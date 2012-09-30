@@ -56,7 +56,11 @@
 			return $this->getListCachedByQuery(
 				\ewgraFramework\DatabaseQuery::create()->
 				setQuery($dbQuery)->
-				setValues(array($right->getId()))
+				setValues(array($right->getId())),
+				array_merge(
+					$this->getTagList(),
+					array(UserRight::da()->getTag())
+				)
 			);
 		}
 	}

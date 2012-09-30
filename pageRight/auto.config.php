@@ -7,7 +7,4 @@
 	*/
 
 	\ewgraFramework\ClassesAutoloader::me()->addSearchDirectory(dirname(__FILE__), __NAMESPACE__);
-
-	\ewgraCms\Page::da()->addLinkedCacher(PageRight::da());
-	Right::da()->addLinkedCacher(PageRight::da());
 ?>

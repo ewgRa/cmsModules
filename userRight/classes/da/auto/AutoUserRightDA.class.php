@@ -11,10 +11,33 @@
 	{
 		protected $tableAlias = 'user_right';
 
+		public function getTag()
+		{
+			return '\ewgraCmsModules\UserRight';
+		}
+
+		/**
+		 * @return array
+		 */
+		public function getTagList()
+		{
+			return array($this->getTag(), '\ewgraCmsModules\User', '\ewgraCmsModules\Right');
+		}
+
 		/**
 		 * @return UserRight
 		 */
 		public function insert(UserRight $object)
+		{
+			$result = $this->rawInsert($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return UserRight
+		 */
+		public function rawInsert(UserRight $object)
 		{
 			$dialect = $this->db()->getDialect();
 
@@ -22,6 +45,13 @@
 			$fields = array();
 			$fieldValues = array();
 			$values = array();
+
+			if ($object->hasId()) {
+				$fields[] = $dialect->escapeField('id');
+				$fieldValues[] = '?';
+				$values[] = $object->getId();
+			}
+
 			$fields[] = $dialect->escapeField('user_id');
 			$fieldValues[] = '?';
 			$values[] = $object->getUserId();
@@ -39,9 +69,8 @@
 					setValues($values)
 				);
 
-			$object->setId($dbResult->getInsertedId());
-
-			$this->dropCache();
+			if (!$object->hasId())
+				$object->setId($dbResult->getInsertedId());
 
 			return $object;
 		}
@@ -50,6 +79,16 @@
 		 * @return AutoUserRightDA
 		 */
 		public function save(UserRight $object)
+		{
+			$result = $this->rawSave($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return AutoUserRightDA
+		 */
+		public function rawSave(UserRight $object)
 		{
 			$dialect = $this->db()->getDialect();
 			$dbQuery = 'UPDATE '.$this->getTable().' SET ';
@@ -75,8 +114,6 @@
 				setValues($queryParams)
 			);
 
-			$this->dropCache();
-
 			return $object;
 		}
 
@@ -84,6 +121,16 @@
 		 * @return AutoUserRightDA
 		 */
 		public function delete(UserRight $object)
+		{
+			$result = $this->rawDelete($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return AutoUserRightDA
+		 */
+		public function rawDelete(UserRight $object)
 		{
 			$dbQuery =
 				'DELETE FROM '.$this->getTable().' WHERE id = '.$object->getId();
@@ -93,8 +140,6 @@
 			);
 
 			$object->setId(null);
-
-			$this->dropCache();
 
 			return $this;
 		}

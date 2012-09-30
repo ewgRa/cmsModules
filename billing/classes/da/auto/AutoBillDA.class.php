@@ -11,10 +11,33 @@
 	{
 		protected $tableAlias = 'bill';
 
+		public function getTag()
+		{
+			return '\ewgraCmsModules\Bill';
+		}
+
+		/**
+		 * @return array
+		 */
+		public function getTagList()
+		{
+			return array($this->getTag());
+		}
+
 		/**
 		 * @return Bill
 		 */
 		public function insert(Bill $object)
+		{
+			$result = $this->rawInsert($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return Bill
+		 */
+		public function rawInsert(Bill $object)
 		{
 			$dialect = $this->db()->getDialect();
 
@@ -22,6 +45,13 @@
 			$fields = array();
 			$fieldValues = array();
 			$values = array();
+
+			if ($object->hasId()) {
+				$fields[] = $dialect->escapeField('id');
+				$fieldValues[] = '?';
+				$values[] = $object->getId();
+			}
+
 			$fields[] = $dialect->escapeField('created');
 			$fieldValues[] = '?';
 			$values[] = $object->getCreated()->__toString();
@@ -42,9 +72,8 @@
 					setValues($values)
 				);
 
-			$object->setId($dbResult->getInsertedId());
-
-			$this->dropCache();
+			if (!$object->hasId())
+				$object->setId($dbResult->getInsertedId());
 
 			return $object;
 		}
@@ -53,6 +82,16 @@
 		 * @return AutoBillDA
 		 */
 		public function save(Bill $object)
+		{
+			$result = $this->rawSave($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return AutoBillDA
+		 */
+		public function rawSave(Bill $object)
 		{
 			$dialect = $this->db()->getDialect();
 			$dbQuery = 'UPDATE '.$this->getTable().' SET ';
@@ -80,8 +119,6 @@
 				setValues($queryParams)
 			);
 
-			$this->dropCache();
-
 			return $object;
 		}
 
@@ -89,6 +126,16 @@
 		 * @return AutoBillDA
 		 */
 		public function delete(Bill $object)
+		{
+			$result = $this->rawDelete($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return AutoBillDA
+		 */
+		public function rawDelete(Bill $object)
 		{
 			$dbQuery =
 				'DELETE FROM '.$this->getTable().' WHERE id = '.$object->getId();
@@ -98,8 +145,6 @@
 			);
 
 			$object->setId(null);
-
-			$this->dropCache();
 
 			return $this;
 		}
@@ -136,12 +181,6 @@
 				setCreated(\ewgraFramework\DateTime::createFromString($array['created']))->
 				setAlias($array['alias'])->
 				setBalance($array['balance']);
-		}
-
-		public function dropCache()
-		{
-			BillTransaction::da()->dropCache();
-			return parent::dropCache();
 		}
 	}
 ?>

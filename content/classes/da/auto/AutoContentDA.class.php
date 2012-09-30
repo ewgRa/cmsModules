@@ -11,10 +11,33 @@
 	{
 		protected $tableAlias = 'content';
 
+		public function getTag()
+		{
+			return '\ewgraCmsModules\Content';
+		}
+
+		/**
+		 * @return array
+		 */
+		public function getTagList()
+		{
+			return array($this->getTag());
+		}
+
 		/**
 		 * @return Content
 		 */
 		public function insert(Content $object)
+		{
+			$result = $this->rawInsert($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return Content
+		 */
+		public function rawInsert(Content $object)
 		{
 			$dialect = $this->db()->getDialect();
 
@@ -22,6 +45,13 @@
 			$fields = array();
 			$fieldValues = array();
 			$values = array();
+
+			if ($object->hasId()) {
+				$fields[] = $dialect->escapeField('id');
+				$fieldValues[] = '?';
+				$values[] = $object->getId();
+			}
+
 			$fields[] = $dialect->escapeField('status');
 			$fieldValues[] = '?';
 			$values[] = $object->getStatus()->getId();
@@ -36,9 +66,8 @@
 					setValues($values)
 				);
 
-			$object->setId($dbResult->getInsertedId());
-
-			$this->dropCache();
+			if (!$object->hasId())
+				$object->setId($dbResult->getInsertedId());
 
 			return $object;
 		}
@@ -47,6 +76,16 @@
 		 * @return AutoContentDA
 		 */
 		public function save(Content $object)
+		{
+			$result = $this->rawSave($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return AutoContentDA
+		 */
+		public function rawSave(Content $object)
 		{
 			$dialect = $this->db()->getDialect();
 			$dbQuery = 'UPDATE '.$this->getTable().' SET ';
@@ -70,8 +109,6 @@
 				setValues($queryParams)
 			);
 
-			$this->dropCache();
-
 			return $object;
 		}
 
@@ -79,6 +116,16 @@
 		 * @return AutoContentDA
 		 */
 		public function delete(Content $object)
+		{
+			$result = $this->rawDelete($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return AutoContentDA
+		 */
+		public function rawDelete(Content $object)
 		{
 			$dbQuery =
 				'DELETE FROM '.$this->getTable().' WHERE id = '.$object->getId();
@@ -88,8 +135,6 @@
 			);
 
 			$object->setId(null);
-
-			$this->dropCache();
 
 			return $this;
 		}
@@ -124,12 +169,6 @@
 				Content::create()->
 				setId($array['id'])->
 				setStatus(ContentStatus::create($array['status']));
-		}
-
-		public function dropCache()
-		{
-			ContentData::da()->dropCache();
-			return parent::dropCache();
 		}
 	}
 ?>

@@ -11,10 +11,33 @@
 	{
 		protected $tableAlias = 'bill_transaction';
 
+		public function getTag()
+		{
+			return '\ewgraCmsModules\BillTransaction';
+		}
+
+		/**
+		 * @return array
+		 */
+		public function getTagList()
+		{
+			return array($this->getTag(), '\ewgraCmsModules\Bill');
+		}
+
 		/**
 		 * @return BillTransaction
 		 */
 		public function insert(BillTransaction $object)
+		{
+			$result = $this->rawInsert($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return BillTransaction
+		 */
+		public function rawInsert(BillTransaction $object)
 		{
 			$dialect = $this->db()->getDialect();
 
@@ -22,6 +45,13 @@
 			$fields = array();
 			$fieldValues = array();
 			$values = array();
+
+			if ($object->hasId()) {
+				$fields[] = $dialect->escapeField('id');
+				$fieldValues[] = '?';
+				$values[] = $object->getId();
+			}
+
 			$fields[] = $dialect->escapeField('created');
 			$fieldValues[] = '?';
 			$values[] = $object->getCreated()->__toString();
@@ -48,9 +78,8 @@
 					setValues($values)
 				);
 
-			$object->setId($dbResult->getInsertedId());
-
-			$this->dropCache();
+			if (!$object->hasId())
+				$object->setId($dbResult->getInsertedId());
 
 			return $object;
 		}
@@ -59,6 +88,16 @@
 		 * @return AutoBillTransactionDA
 		 */
 		public function save(BillTransaction $object)
+		{
+			$result = $this->rawSave($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return AutoBillTransactionDA
+		 */
+		public function rawSave(BillTransaction $object)
 		{
 			$dialect = $this->db()->getDialect();
 			$dbQuery = 'UPDATE '.$this->getTable().' SET ';
@@ -90,8 +129,6 @@
 				setValues($queryParams)
 			);
 
-			$this->dropCache();
-
 			return $object;
 		}
 
@@ -99,6 +136,16 @@
 		 * @return AutoBillTransactionDA
 		 */
 		public function delete(BillTransaction $object)
+		{
+			$result = $this->rawDelete($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return AutoBillTransactionDA
+		 */
+		public function rawDelete(BillTransaction $object)
 		{
 			$dbQuery =
 				'DELETE FROM '.$this->getTable().' WHERE id = '.$object->getId();
@@ -108,8 +155,6 @@
 			);
 
 			$object->setId(null);
-
-			$this->dropCache();
 
 			return $this;
 		}

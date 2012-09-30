@@ -11,10 +11,33 @@
 	{
 		protected $tableAlias = 'content_data';
 
+		public function getTag()
+		{
+			return '\ewgraCmsModules\ContentData';
+		}
+
+		/**
+		 * @return array
+		 */
+		public function getTagList()
+		{
+			return array($this->getTag(), '\ewgraCmsModules\Content', '\ewgraCms\Language');
+		}
+
 		/**
 		 * @return ContentData
 		 */
 		public function insert(ContentData $object)
+		{
+			$result = $this->rawInsert($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return ContentData
+		 */
+		public function rawInsert(ContentData $object)
 		{
 			$dialect = $this->db()->getDialect();
 
@@ -22,6 +45,13 @@
 			$fields = array();
 			$fieldValues = array();
 			$values = array();
+
+			if ($object->hasId()) {
+				$fields[] = $dialect->escapeField('id');
+				$fieldValues[] = '?';
+				$values[] = $object->getId();
+			}
+
 			$fields[] = $dialect->escapeField('content_id');
 			$fieldValues[] = '?';
 			$values[] = $object->getContentId();
@@ -42,9 +72,8 @@
 					setValues($values)
 				);
 
-			$object->setId($dbResult->getInsertedId());
-
-			$this->dropCache();
+			if (!$object->hasId())
+				$object->setId($dbResult->getInsertedId());
 
 			return $object;
 		}
@@ -53,6 +82,16 @@
 		 * @return AutoContentDataDA
 		 */
 		public function save(ContentData $object)
+		{
+			$result = $this->rawSave($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return AutoContentDataDA
+		 */
+		public function rawSave(ContentData $object)
 		{
 			$dialect = $this->db()->getDialect();
 			$dbQuery = 'UPDATE '.$this->getTable().' SET ';
@@ -80,8 +119,6 @@
 				setValues($queryParams)
 			);
 
-			$this->dropCache();
-
 			return $object;
 		}
 
@@ -89,6 +126,16 @@
 		 * @return AutoContentDataDA
 		 */
 		public function delete(ContentData $object)
+		{
+			$result = $this->rawDelete($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return AutoContentDataDA
+		 */
+		public function rawDelete(ContentData $object)
 		{
 			$dbQuery =
 				'DELETE FROM '.$this->getTable().' WHERE id = '.$object->getId();
@@ -98,8 +145,6 @@
 			);
 
 			$object->setId(null);
-
-			$this->dropCache();
 
 			return $this;
 		}

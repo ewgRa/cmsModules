@@ -11,10 +11,33 @@
 	{
 		protected $tableAlias = 'page_right';
 
+		public function getTag()
+		{
+			return '\ewgraCmsModules\PageRight';
+		}
+
+		/**
+		 * @return array
+		 */
+		public function getTagList()
+		{
+			return array($this->getTag(), '\ewgraCms\Page', '\ewgraCmsModules\Right');
+		}
+
 		/**
 		 * @return PageRight
 		 */
 		public function insert(PageRight $object)
+		{
+			$result = $this->rawInsert($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return PageRight
+		 */
+		public function rawInsert(PageRight $object)
 		{
 			$dialect = $this->db()->getDialect();
 
@@ -22,6 +45,13 @@
 			$fields = array();
 			$fieldValues = array();
 			$values = array();
+
+			if ($object->hasId()) {
+				$fields[] = $dialect->escapeField('id');
+				$fieldValues[] = '?';
+				$values[] = $object->getId();
+			}
+
 			$fields[] = $dialect->escapeField('page_id');
 			$fieldValues[] = '?';
 			$values[] = $object->getPageId();
@@ -42,9 +72,8 @@
 					setValues($values)
 				);
 
-			$object->setId($dbResult->getInsertedId());
-
-			$this->dropCache();
+			if (!$object->hasId())
+				$object->setId($dbResult->getInsertedId());
 
 			return $object;
 		}
@@ -53,6 +82,16 @@
 		 * @return AutoPageRightDA
 		 */
 		public function save(PageRight $object)
+		{
+			$result = $this->rawSave($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return AutoPageRightDA
+		 */
+		public function rawSave(PageRight $object)
 		{
 			$dialect = $this->db()->getDialect();
 			$dbQuery = 'UPDATE '.$this->getTable().' SET ';
@@ -80,8 +119,6 @@
 				setValues($queryParams)
 			);
 
-			$this->dropCache();
-
 			return $object;
 		}
 
@@ -89,6 +126,16 @@
 		 * @return AutoPageRightDA
 		 */
 		public function delete(PageRight $object)
+		{
+			$result = $this->rawDelete($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return AutoPageRightDA
+		 */
+		public function rawDelete(PageRight $object)
 		{
 			$dbQuery =
 				'DELETE FROM '.$this->getTable().' WHERE id = '.$object->getId();
@@ -98,8 +145,6 @@
 			);
 
 			$object->setId(null);
-
-			$this->dropCache();
 
 			return $this;
 		}

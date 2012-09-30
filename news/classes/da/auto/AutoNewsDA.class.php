@@ -11,10 +11,33 @@
 	{
 		protected $tableAlias = 'news';
 
+		public function getTag()
+		{
+			return '\ewgraCmsModules\News';
+		}
+
+		/**
+		 * @return array
+		 */
+		public function getTagList()
+		{
+			return array($this->getTag());
+		}
+
 		/**
 		 * @return News
 		 */
 		public function insert(News $object)
+		{
+			$result = $this->rawInsert($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return News
+		 */
+		public function rawInsert(News $object)
 		{
 			$dialect = $this->db()->getDialect();
 
@@ -22,6 +45,13 @@
 			$fields = array();
 			$fieldValues = array();
 			$values = array();
+
+			if ($object->hasId()) {
+				$fields[] = $dialect->escapeField('id');
+				$fieldValues[] = '?';
+				$values[] = $object->getId();
+			}
+
 			$fields[] = $dialect->escapeField('uri');
 			$fieldValues[] = '?';
 			$values[] = $object->getUri();
@@ -42,9 +72,8 @@
 					setValues($values)
 				);
 
-			$object->setId($dbResult->getInsertedId());
-
-			$this->dropCache();
+			if (!$object->hasId())
+				$object->setId($dbResult->getInsertedId());
 
 			return $object;
 		}
@@ -53,6 +82,16 @@
 		 * @return AutoNewsDA
 		 */
 		public function save(News $object)
+		{
+			$result = $this->rawSave($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return AutoNewsDA
+		 */
+		public function rawSave(News $object)
 		{
 			$dialect = $this->db()->getDialect();
 			$dbQuery = 'UPDATE '.$this->getTable().' SET ';
@@ -80,8 +119,6 @@
 				setValues($queryParams)
 			);
 
-			$this->dropCache();
-
 			return $object;
 		}
 
@@ -89,6 +126,16 @@
 		 * @return AutoNewsDA
 		 */
 		public function delete(News $object)
+		{
+			$result = $this->rawDelete($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return AutoNewsDA
+		 */
+		public function rawDelete(News $object)
 		{
 			$dbQuery =
 				'DELETE FROM '.$this->getTable().' WHERE id = '.$object->getId();
@@ -98,8 +145,6 @@
 			);
 
 			$object->setId(null);
-
-			$this->dropCache();
 
 			return $this;
 		}
@@ -136,12 +181,6 @@
 				setUri($array['uri'])->
 				setCreated($array['created'])->
 				setModified($array['modified']);
-		}
-
-		public function dropCache()
-		{
-			NewsData::da()->dropCache();
-			return parent::dropCache();
 		}
 	}
 ?>

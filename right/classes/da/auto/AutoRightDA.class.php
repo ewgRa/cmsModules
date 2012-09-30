@@ -11,10 +11,33 @@
 	{
 		protected $tableAlias = 'right';
 
+		public function getTag()
+		{
+			return '\ewgraCmsModules\Right';
+		}
+
+		/**
+		 * @return array
+		 */
+		public function getTagList()
+		{
+			return array($this->getTag());
+		}
+
 		/**
 		 * @return Right
 		 */
 		public function insert(Right $object)
+		{
+			$result = $this->rawInsert($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return Right
+		 */
+		public function rawInsert(Right $object)
 		{
 			$dialect = $this->db()->getDialect();
 
@@ -22,6 +45,13 @@
 			$fields = array();
 			$fieldValues = array();
 			$values = array();
+
+			if ($object->hasId()) {
+				$fields[] = $dialect->escapeField('id');
+				$fieldValues[] = '?';
+				$values[] = $object->getId();
+			}
+
 			$fields[] = $dialect->escapeField('alias');
 			$fieldValues[] = '?';
 			$values[] = $object->getAlias();
@@ -40,7 +70,7 @@
 			if ($object->getRole() === null)
 				$values[] = null;
 			else {
-				$values[] = $object->getRole();
+				$values[] = ($object->getRole() ? 1 : 0);
 			}
 
 			$dbQuery .= '('.join(', ', $fields).') VALUES ';
@@ -54,9 +84,8 @@
 					setValues($values)
 				);
 
-			$object->setId($dbResult->getInsertedId());
-
-			$this->dropCache();
+			if (!$object->hasId())
+				$object->setId($dbResult->getInsertedId());
 
 			return $object;
 		}
@@ -65,6 +94,16 @@
 		 * @return AutoRightDA
 		 */
 		public function save(Right $object)
+		{
+			$result = $this->rawSave($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return AutoRightDA
+		 */
+		public function rawSave(Right $object)
 		{
 			$dialect = $this->db()->getDialect();
 			$dbQuery = 'UPDATE '.$this->getTable().' SET ';
@@ -88,7 +127,7 @@
 				$queryParts[] = $dialect->escapeField('role').' = NULL';
 			else {
 				$queryParts[] = $dialect->escapeField('role').' = ?';
-				$queryParams[] = $object->getRole();
+				$queryParams[] = ($object->getRole() ? 1 : 0);
 			}
 
 
@@ -104,8 +143,6 @@
 				setValues($queryParams)
 			);
 
-			$this->dropCache();
-
 			return $object;
 		}
 
@@ -113,6 +150,16 @@
 		 * @return AutoRightDA
 		 */
 		public function delete(Right $object)
+		{
+			$result = $this->rawDelete($object);
+			$this->dropCache();
+			return $result;
+		}
+
+		/**
+		 * @return AutoRightDA
+		 */
+		public function rawDelete(Right $object)
 		{
 			$dbQuery =
 				'DELETE FROM '.$this->getTable().' WHERE id = '.$object->getId();
@@ -122,8 +169,6 @@
 			);
 
 			$object->setId(null);
-
-			$this->dropCache();
 
 			return $this;
 		}
