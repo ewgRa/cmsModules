@@ -40,7 +40,8 @@
 					SELECT count(*) as cnt FROM '.$this->getTable().'
 					WHERE credit_id=? OR debit_id=?
 				')->
-				setValues(array($bill->getId(), $bill->getId()))
+				setValues(array($bill->getId(), $bill->getId())),
+				array($this->getTag())
 			);
 
 			return $arr['cnt'];
