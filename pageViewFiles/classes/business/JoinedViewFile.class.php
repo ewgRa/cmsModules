@@ -127,7 +127,12 @@
 				foreach($matches as $match) {
 					$importUrl = clone $url;
 
-					$importUrl->setPath(pathinfo($url->getPath(), PATHINFO_DIRNAME).'/'.$match[1]);
+					$path = $match[1];
+
+					if (substr($path, 0, 1) != '/')
+						$path = pathinfo($url->getPath(), PATHINFO_DIRNAME).'/'.$path;
+
+					$importUrl->setPath($path);
 
 					$content = str_replace(
 						'%IMPORT_'.$match[1].'%',
